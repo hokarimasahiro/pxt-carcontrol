@@ -109,7 +109,7 @@ namespace Tinybit {
      * @param index
      */
 
-    //% blockId="Tinybit_RGB_Car_Big" block="RGB_Car_Big|value %value"
+    //% blockId="Tinybit_RGB_Car_Big" block="RGB_Car_Big|color %value"
     //% weight=98
     //% blockGap=10
     export function RGB_Car_Big(value: enColor): void {
