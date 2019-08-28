@@ -5,7 +5,7 @@ load dependency
 "Tinybit": "file:../pxt-Tinybit"
 */
 
-//% color="#006400" weight=20 icon="\uf1b9"
+//% color=#006400 weight=20 icon="\uf1b9"
 namespace Tinybit {
 
     const PWM_ADD = 0x01
@@ -16,19 +16,19 @@ namespace Tinybit {
         //% block=black
         black = 0x000000,
         //% block=Red
-        Red = 0x0000ff,
+        Red = 0xff0000,
         //% block=Green
         Green = 0x00ff00,
         //% block=Blue
-        Blue = 0xff0000,
+        Blue = 0x0000ff,
         //% block=White
         White = 0xffffff,
         //% block=Cyan
-        Cyan = 0xffff00,
+        Cyan = 0x00ffff,
         //% block=Pinkish
         Pinkish = 0xff00ff,
         //% block=Yellow
-        Yellow = 0x00ffff
+        Yellow = 0xffff00
     }
     export enum enPos {
 
@@ -105,26 +105,21 @@ namespace Tinybit {
     }
 
     //% blockId="Tinybit_RGB_Car_Big" block="RGB_Car_Big|color %color"
-    //% weight=98
-    //% blockGap=10
+    //% weight=98 blockGap=10
     export function RGB_Car_Big(color: enColor): void {
 
-        setPwmRGB(color & 0x0000ff, color & 0x00ff00 >> 8, color & 0xff0000 >> 16)
+        setPwmRGB(color & 0xff0000 >> 16, color & 0x00ff00 >> 8, color & 0x0000ff)
     }
-    //% blockId="Tinybit_RGB_Car_Big2" block="RGB_Car_Big2|reg %value1|green %value2|blue %value3"
-    //% weight=97
-    //% blockGap=10
-    //% value1.min=0 value1.max=255 value2.min=0 value2.max=255 value3.min=0 value3.max=255
-    export function RGB_Car_Big2(value1: number, value2: number, value3: number): void {
+    //% blockId="Tinybit_RGB_Car_Big2" block="RGB_Car_Big2|reg %red|green %green|blue %blue"
+    //% weight=97 blockGap=10
+    //% red.min=0 red.max=255 green.min=0 green.max=255 blue.min=0 blue.max=255
+    export function RGB_Car_Big2(red: number, green: number, blue: number): void {
 
-        setPwmRGB(value1, value2, value3);
-
+        setPwmRGB(red, green, blue);
     }
 
     //% blockId="Tinybit_CarCtrl" block="CarCtrl|%index"
-    //% weight=93
-    //% blockGap=10
-    //% color="#006400"
+    //% weight=93 blockGap=10
     export function CarCtrl(index: CarState): void {
         switch (index) {
             case CarState.Car_Run: setPwmMotor(255, 255); break;
@@ -138,10 +133,8 @@ namespace Tinybit {
     }
 
     //% blockId="Tinybit_CarCtrlSpeed" block="CarCtrlSpeed|%index|speed %speed"
-    //% weight=92
-    //% blockGap=10
-    //% speed.min=0 speed.max=255
-    //% color="#006400"
+    //% weight=92 blockGap=10
+    //% speed.min=0 speed.max=255 speed.default=255
     export function CarCtrlSpeed(index: CarState, speed: number): void {
         switch (index) {
             case CarState.Car_Run: setPwmMotor(speed, speed); break;
@@ -155,19 +148,14 @@ namespace Tinybit {
     }
 
     //% blockId="Tinybit_CarCtrlSpeed2" block="CarCtrlSpeed| speedL %speedL| speedR %speedR"
-    //% weight=91
-    //% blockGap=10
-    //% speedL.min=-255 speedL.max=255
-    //% speedR.min=-255 speedR.max=255
-    //% color="#006400"
+    //% weight=91 blockGap=10
+    //% speedL.min=-255 speedL.max=255 speedR.min=-255 speedR.max=255 speedL.default=255 speedR.default=255
     export function CarCtrlSpeed2(speedL: number, speedR: number): void {
         setPwmMotor(speedL, speedR)
     }
 
     //% blockId="Tinybit_Line_Sensor" block="Line_Sensor|direct %direct|value %value"
-    //% weight=89
-    //% blockGap=10
-    //% color="#006400"
+    //% weight=89 blockGap=10
     export function Line_Sensor(direct: enPos, value: enLineState): boolean {
 
         let temp: boolean = false;
@@ -199,21 +187,16 @@ namespace Tinybit {
     }
 
     //% blockId="Tinybit_Voice_Sensor" block="Voice Sensor return"
-    //% weight=88
-    //% blockGap=10
+    //% weight=88 blockGap=10
     export function Voice_Sensor(): number {
-        //pins.setPull(DigitalPin.P1, PinPullMode.PullUp);
         let temp = 0;
         temp = pins.analogReadPin(AnalogPin.P1);
 
         return temp;
-
     }
 
     //% blockId="Tinybit_Ultrasonic_Car" block="ultrasonic return distance(cm)"
-    //% color="#006400"
-    //% weight=87
-    //% blockGap=10
+    //% weight=87 blockGap=10
     export function Ultrasonic_Car(): number {
 
         let list: Array<number> = [0, 0, 0, 0, 0];
