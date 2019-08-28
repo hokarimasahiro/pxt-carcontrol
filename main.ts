@@ -14,21 +14,21 @@ namespace Tinybit {
 
     export enum enColor {
         //% block=OFF
-        OFF = 0,
+        OFF = 0x000000,
         //% block=Red
-        Red,
+        Red = 0x0000ff,
         //% block=Green
-        Green,
+        Green = 0x00ff00,
         //% block=Blue
-        Blue,
+        Blue = 0xff0000,
         //% block=White
-        White,
+        White = 0xffffff,
         //% block=Cyan
-        Cyan,
+        Cyan = 0xffff00,
         //% block=Pinkish
-        Pinkish,
+        Pinkish = 0xff00ff,
         //% block=Yellow
-        Yellow
+        Yellow = 0x00ffff
     }
     export enum enPos {
 
@@ -114,40 +114,7 @@ namespace Tinybit {
     //% blockGap=10
     export function RGB_Car_Big(value: enColor): void {
 
-        switch (value) {
-            case enColor.OFF: {
-                setPwmRGB(0, 0, 0);
-                break;
-            }
-            case enColor.Red: {
-                setPwmRGB(255, 0, 0);
-                break;
-            }
-            case enColor.Green: {
-                setPwmRGB(0, 255, 0);
-                break;
-            }
-            case enColor.Blue: {
-                setPwmRGB(0, 0, 255);
-                break;
-            }
-            case enColor.White: {
-                setPwmRGB(255, 255, 255);
-                break;
-            }
-            case enColor.Cyan: {
-                setPwmRGB(0, 255, 255);
-                break;
-            }
-            case enColor.Pinkish: {
-                setPwmRGB(255, 0, 255);
-                break;
-            }
-            case enColor.Yellow: {
-                setPwmRGB(255, 255, 0);
-                break;
-            }
-        }
+            setPwmRGB(value & 0x0000ff,value & 0x00ff00 >> 8,value & 0xff0000 >> 16)
     }
     //% blockId="Tinybit_RGB_Car_Big2" block="RGB_Car_Big2|value1 %value1|value2 %value2|value3 %value3"
     //% weight=97
