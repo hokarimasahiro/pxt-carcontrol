@@ -137,8 +137,8 @@ namespace Tinybit {
 
     /**
      * Run a car at a specified speed.
-     * @param speed Car speedL in 0-255. eg:50
-     * @param speed Car speedR in 0-255. eg:50
+     * @param speedL Left Moter Power in 0-255. eg:50
+     * @param speedR Right Motor Power in 0-255. eg:50
      */
     //% blockId="Tinybit_CarCtrlSpeed2" block="CarCtrlSpeed| speedL %speedL| speedR %speedR"
     //% weight=91 blockGap=10
