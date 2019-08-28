@@ -104,11 +104,6 @@ namespace Tinybit {
         pins.i2cWriteBuffer(PWM_ADD, buf);
     }
 
-    /**
-     * *****************************************************************
-     * @param index
-     */
-
     //% blockId="Tinybit_RGB_Car_Big" block="RGB_Car_Big|color %color"
     //% weight=98
     //% blockGap=10
