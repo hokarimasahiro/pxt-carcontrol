@@ -147,6 +147,9 @@ namespace Tinybit {
         setPwmMotor(speedL, speedR)
     }
 
+    /**
+     * Sense a line color.
+     */
     //% blockId="Tinybit_Line_Sensor" block="Line_Sensor|direct %direct|value %value"
     //% weight=89 blockGap=10
     export function Line_Sensor(direct: enPos, value: enLineState): boolean {
@@ -160,12 +163,18 @@ namespace Tinybit {
         return false;
     }
 
+    /**
+     * Get Voice Level.
+     */
     //% blockId="Tinybit_Voice_Sensor" block="Voice Sensor return"
     //% weight=88 blockGap=10
     export function Voice_Sensor(): number {
         return pins.analogReadPin(AnalogPin.P1);
     }
 
+    /**
+     * Get Distance.
+     */
     //% blockId="Tinybit_Ultrasonic_Car" block="ultrasonic return distance(cm)"
     //% weight=87 blockGap=10
     export function Ultrasonic_Car(): number {
