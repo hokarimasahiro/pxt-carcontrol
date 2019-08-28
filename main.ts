@@ -109,12 +109,12 @@ namespace Tinybit {
      * @param index
      */
 
-    //% blockId="Tinybit_RGB_Car_Big" block="RGB_Car_Big|color %value"
+    //% blockId="Tinybit_RGB_Car_Big" block="RGB_Car_Big|color %color"
     //% weight=98
     //% blockGap=10
-    export function RGB_Car_Big(value: enColor): void {
+    export function RGB_Car_Big(color: enColor): void {
 
-            setPwmRGB(value & 0x0000ff,value & 0x00ff00 >> 8,value & 0xff0000 >> 16)
+        setPwmRGB(color & 0x0000ff, color & 0x00ff00 >> 8, color & 0xff0000 >> 16)
     }
     //% blockId="Tinybit_RGB_Car_Big2" block="RGB_Car_Big2|value1 %value1|value2 %value2|value3 %value3"
     //% weight=97
