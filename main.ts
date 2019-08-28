@@ -118,7 +118,7 @@ namespace Tinybit {
 
     /**
      * Run the car with the specified action.
-     * @param speed Car Speed in 0-255. eg:50
+     * @param speed Car speed in 0-255. eg:50
      */
     //% blockId="Tinybit_CarCtrlSpeed" block="CarCtrlSpeed|%index|speed %speed"
     //% weight=92 blockGap=10
@@ -137,8 +137,8 @@ namespace Tinybit {
 
     /**
      * Run a car at a specified speed.
-     * @param speed Car SpeedL in 0-255. eg:50
-     * @param speed Car SpeedR in 0-255. eg:50
+     * @param speed Car speedL in 0-255. eg:50
+     * @param speed Car speedR in 0-255. eg:50
      */
     //% blockId="Tinybit_CarCtrlSpeed2" block="CarCtrlSpeed| speedL %speedL| speedR %speedR"
     //% weight=91 blockGap=10
