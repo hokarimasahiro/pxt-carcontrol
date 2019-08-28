@@ -1,8 +1,6 @@
 /*
 Copyright (C): 2010-2019, Shenzhen Yahboom Tech
 modified from liusen
-load dependency
-"Tinybit": "file:../pxt-Tinybit"
 */
 
 //% color=#006400 weight=20 icon="\uf1b9"
