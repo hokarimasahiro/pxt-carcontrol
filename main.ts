@@ -41,12 +41,6 @@ namespace Tinybit {
         //% block=BlackLine
         Black = 1
     }
-    export enum enTouchState {
-        //% block=Get
-        Get = 0,
-        //% block=NoGet
-        NoGet = 1
-    }
     export enum enAvoidState {
         //% block=Obstacle
         OBSTACLE = 1,
@@ -101,6 +95,9 @@ namespace Tinybit {
         }
         pins.i2cWriteBuffer(PWM_ADD, buf);
     }
+    /**
+     * Set Big LED to a given color.
+     */
 
     //% blockId="Tinybit_RGB_Car_Big" block="RGB_Car_Big|color %color"
     //% weight=98 blockGap=10
@@ -108,6 +105,9 @@ namespace Tinybit {
 
         setPwmRGB(color & 0xff0000 >> 16, color & 0x00ff00 >> 8, color & 0x0000ff)
     }
+    /**
+     * Set Big LED to a given color (range 0- 255 for red, green, blue).
+     */
     //% blockId="Tinybit_RGB_Car_Big2" block="RGB_Car_Big2|reg %red|green %green|blue %blue"
     //% weight=97 blockGap=10
     //% red.min=0 red.max=255 green.min=0 green.max=255 blue.min=0 blue.max=255
@@ -116,24 +116,14 @@ namespace Tinybit {
         setPwmRGB(red, green, blue);
     }
 
-    //% blockId="Tinybit_CarCtrl" block="CarCtrl|%index"
-    //% weight=93 blockGap=10
-    export function CarCtrl(index: CarState): void {
-        switch (index) {
-            case CarState.Car_Run: setPwmMotor(255, 255); break;
-            case CarState.Car_Back: setPwmMotor(-255, -255); break;
-            case CarState.Car_Left: setPwmMotor(0, 255); break;
-            case CarState.Car_Right: setPwmMotor(255, 0); break;
-            case CarState.Car_Stop: setPwmMotor(0, 0); break;
-            case CarState.Car_SpinLeft: setPwmMotor(-255, 255); break;
-            case CarState.Car_SpinRight: setPwmMotor(255, -255); break;
-        }
-    }
-
+    /**
+     * Run the car with the specified action.
+     * @param speed Car Speed in 0-255. eg:50
+     */
     //% blockId="Tinybit_CarCtrlSpeed" block="CarCtrlSpeed|%index|speed %speed"
     //% weight=92 blockGap=10
     //% speed.min=0 speed.max=255
-    export function CarCtrlSpeed(index: CarState, speed: number=50): void {
+    export function CarCtrlSpeed(index: CarState, speed: number): void {
         switch (index) {
             case CarState.Car_Run: setPwmMotor(speed, speed); break;
             case CarState.Car_Back: setPwmMotor(-speed, -speed); break;
@@ -145,10 +135,15 @@ namespace Tinybit {
         }
     }
 
+    /**
+     * Run a car at a specified speed.
+     * @param speed Car SpeedL in 0-255. eg:50
+     * @param speed Car SpeedR in 0-255. eg:50
+     */
     //% blockId="Tinybit_CarCtrlSpeed2" block="CarCtrlSpeed| speedL %speedL| speedR %speedR"
     //% weight=91 blockGap=10
     //% speedL.min=-255 speedL.max=255 speedR.min=-255 speedR.max=255
-    export function CarCtrlSpeed2(speedL: number=50, speedR: number=50): void {
+    export function CarCtrlSpeed2(speedL: number, speedR: number): void {
         setPwmMotor(speedL, speedR)
     }
 
@@ -156,41 +151,19 @@ namespace Tinybit {
     //% weight=89 blockGap=10
     export function Line_Sensor(direct: enPos, value: enLineState): boolean {
 
-        let temp: boolean = false;
         pins.setPull(DigitalPin.P13, PinPullMode.PullNone);
         pins.setPull(DigitalPin.P14, PinPullMode.PullNone);
-        switch (direct) {
-            case enPos.LeftState: {
-                if (pins.digitalReadPin(DigitalPin.P13) == value) {
-                    temp = true;
-                }
-                else {
-                    temp = false;
-                }
-                break;
-            }
-
-            case enPos.RightState: {
-                if (pins.digitalReadPin(DigitalPin.P14) == value) {
-                    temp = true;
-                }
-                else {
-                    temp = false;
-                }
-                break;
-            }
-        }
-        return temp;
-
+        if (direct == enPos.LeftState)
+            return (pins.digitalReadPin(DigitalPin.P13) == value);
+        else if (direct == enPos.RightState)
+            return (pins.digitalReadPin(DigitalPin.P14) == value);
+        return false;
     }
 
     //% blockId="Tinybit_Voice_Sensor" block="Voice Sensor return"
     //% weight=88 blockGap=10
     export function Voice_Sensor(): number {
-        let temp = 0;
-        temp = pins.analogReadPin(AnalogPin.P1);
-
-        return temp;
+        return pins.analogReadPin(AnalogPin.P1);
     }
 
     //% blockId="Tinybit_Ultrasonic_Car" block="ultrasonic return distance(cm)"
