@@ -13,8 +13,8 @@ namespace Tinybit {
     const RGB = 0x01
 
     export enum enColor {
-        //% block=OFF
-        OFF = 0x000000,
+        //% block=black
+        black = 0x000000,
         //% block=Red
         Red = 0x0000ff,
         //% block=Green
@@ -87,7 +87,7 @@ namespace Tinybit {
     function setPwmMotor(speed1: number, speed2: number): void {
         let buf = pins.createBuffer(5);
         buf[0] = MOTOR;
-        if (speed1 >= 0){
+        if (speed1 >= 0) {
             buf[1] = speed1;
             buf[2] = 0;
         } else {
@@ -116,7 +116,7 @@ namespace Tinybit {
 
         setPwmRGB(color & 0x0000ff, color & 0x00ff00 >> 8, color & 0xff0000 >> 16)
     }
-    //% blockId="Tinybit_RGB_Car_Big2" block="RGB_Car_Big2|value1 %value1|value2 %value2|value3 %value3"
+    //% blockId="Tinybit_RGB_Car_Big2" block="RGB_Car_Big2|reg %value1|green %value2|blue %value3"
     //% weight=97
     //% blockGap=10
     //% value1.min=0 value1.max=255 value2.min=0 value2.max=255 value3.min=0 value3.max=255
@@ -136,7 +136,7 @@ namespace Tinybit {
             case CarState.Car_Back: setPwmMotor(-255, -255); break;
             case CarState.Car_Left: setPwmMotor(0, 255); break;
             case CarState.Car_Right: setPwmMotor(255, 0); break;
-            case CarState.Car_Stop: setPwmMotor(0,0); break;
+            case CarState.Car_Stop: setPwmMotor(0, 0); break;
             case CarState.Car_SpinLeft: setPwmMotor(-255, 255); break;
             case CarState.Car_SpinRight: setPwmMotor(255, -255); break;
         }
@@ -153,7 +153,7 @@ namespace Tinybit {
             case CarState.Car_Back: setPwmMotor(-speed, -speed); break;
             case CarState.Car_Left: setPwmMotor(0, speed); break;
             case CarState.Car_Right: setPwmMotor(speed, 0); break;
-            case CarState.Car_Stop: setPwmMotor(0,0); break;
+            case CarState.Car_Stop: setPwmMotor(0, 0); break;
             case CarState.Car_SpinLeft: setPwmMotor(-speed, speed); break;
             case CarState.Car_SpinRight: setPwmMotor(speed, -speed); break;
         }
