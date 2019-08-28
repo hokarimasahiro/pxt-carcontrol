@@ -132,8 +132,8 @@ namespace Tinybit {
 
     //% blockId="Tinybit_CarCtrlSpeed" block="CarCtrlSpeed|%index|speed %speed"
     //% weight=92 blockGap=10
-    //% speed.min=0 speed.max=255 speed.default=255
-    export function CarCtrlSpeed(index: CarState, speed: number): void {
+    //% speed.min=0 speed.max=255
+    export function CarCtrlSpeed(index: CarState, speed: number=50): void {
         switch (index) {
             case CarState.Car_Run: setPwmMotor(speed, speed); break;
             case CarState.Car_Back: setPwmMotor(-speed, -speed); break;
@@ -147,8 +147,8 @@ namespace Tinybit {
 
     //% blockId="Tinybit_CarCtrlSpeed2" block="CarCtrlSpeed| speedL %speedL| speedR %speedR"
     //% weight=91 blockGap=10
-    //% speedL.min=-255 speedL.max=255 speedR.min=-255 speedR.max=255 speedL.default=255 speedR.default=255
-    export function CarCtrlSpeed2(speedL: number, speedR: number): void {
+    //% speedL.min=-255 speedL.max=255 speedR.min=-255 speedR.max=255
+    export function CarCtrlSpeed2(speedL: number=50, speedR: number=50): void {
         setPwmMotor(speedL, speedR)
     }
 
