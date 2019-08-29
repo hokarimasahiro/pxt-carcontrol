@@ -103,7 +103,7 @@ namespace Tinybit {
     //% weight=98 blockGap=10
     export function RGB_Car_Big(color: enColor): void {
 
-        setPwmRGB(color & 0xff0000 >> 16, color & 0x00ff00 >> 8, color & 0x0000ff)
+        setPwmRGB((color & 0xff0000) >> 16, (color & 0x00ff00) >> 8, color & 0x0000ff)
     }
     /**
      * Set Big LED to a given color (range 0- 255 for red, green, blue).
