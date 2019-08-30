@@ -149,11 +149,11 @@ namespace carcotrol {
         }
     }
     /**
-     * Set NeoPixel to a given color (range 0- 255 for red, green, blue).
+     * Set NeoPixel to a given color.
      */
-    //% blockId="set_NeoPixel" block="set NeoPixel No %no color %color"
+    //% blockId="set_Neo Color" block="set NeoColor No %no color %color"
     //% weight=97 blockGap=10
-    export function setNEO(no: number, color: enColor): void {
+    export function setNeoColor(no: number, color: enColor): void {
         if (cartype == carType.Unknown) init();
 
         if (cartype == carType.Maqueen) {
@@ -168,6 +168,31 @@ namespace carcotrol {
                 for (let i = 0; i < 2; i++) strip.setPixelColor(i, color);
             } else strip.setPixelColor(no - 1, color);
             strip.show();
+        }
+    }
+    /**
+     * create color in RGB(range 0- 255 for red,green,blue).
+     */
+    //% blockId="set_Neo Brightness" block="set Neo Brightness %brightness"
+    //% weight=97 blockGap=10
+    //% red.min=0 red.max=255 green.min=0 green.max=255 green.min=0 green.max=255
+    export function createColor(red:number,green:number,blue:number): number {
+        if (cartype == carType.Unknown) init();
+
+        return (((red & 0xff) << 16) + ((green & 0xff) << 8)+ (blue & 0xff))
+    }
+    /**
+     * Set Brightness for NeoPixel(range 0- 255).
+     * @param brightness in 0-255. eg:50
+     */
+    //% blockId="set_Neo Brightness" block="set Neo Brightness %brightness"
+    //% weight=97 blockGap=10
+    //% brightness.min=0 brightness.max=255
+    export function setNeoBright(brightness: number): void {
+        if (cartype == carType.Unknown) init();
+
+        if (cartype == carType.Maqueen || cartype == carType.Tinybit) {
+            strip.setBrightness(brightness)
         }
     }
 
