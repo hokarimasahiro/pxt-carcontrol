@@ -173,7 +173,7 @@ namespace carcotrol {
     /**
      * create color in RGB(range 0- 255 for red,green,blue).
      */
-    //% blockId="set_Neo Brightness" block="set Neo Brightness %brightness"
+    //% blockId="create_color in RBG" block="reate Color |red %red |green %green |blue %blue"
     //% weight=97 blockGap=10
     //% red.min=0 red.max=255 green.min=0 green.max=255 green.min=0 green.max=255
     export function createColor(red:number,green:number,blue:number): number {
