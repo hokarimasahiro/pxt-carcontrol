@@ -1,9 +1,10 @@
 {
-    "name": "pxt-tiny-bit",
+    "name": "pxt-tinybit",
     "version": "0.0.0",
     "description": "",
     "dependencies": {
-        "core": "*"
+        "core": "*",
+        "pxt-neopixel": "github:hokarimasahiro/pxt-neopixel#a030f059dd8751e8e7bf4db0a7d27686d4edb081"
     },
     "files": [
         "README.md",
