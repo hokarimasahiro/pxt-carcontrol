@@ -5,6 +5,8 @@
 namespace carcotrol {
 
     let cartype = 0
+    let strip: neopixel.Strip
+
     let I2C_ADD: number
     const I2C_ADD_Tinybit = 0x01
     const I2C_ADD_Maqueen = 0x10
@@ -15,7 +17,7 @@ namespace carcotrol {
         //% block=Maqueen
         Maqueen = 2,
         //% block=unknown
-        unknown = 0
+        Unknown = 0
     }
     export enum enColor {
         //% block=black
@@ -36,16 +38,12 @@ namespace carcotrol {
         Yellow = 0xffff00
     }
     export enum enPos {
-        //% block=LeftState
-        LeftState = 0,
-        //% block=RightState
-        RightState = 1
-    }
-    export enum enLineState {
-        //% block=WhiteLine
-        White = 0,
-        //% block=BlackLine
-        Black = 1
+        //% block=Left
+        Left = 1,
+        //% block=Right
+        Right = 2,
+        //% block=Both
+        Both = 0
     }
     export enum CarState {
         //% block=Run
@@ -64,9 +62,16 @@ namespace carcotrol {
         Car_SpinRight = 7
     }
     function init() {
-        if (cartype == carType.unknown) {
-            if (testi2c.testReadI2c(I2C_ADD_Tinybit) == 0) cartype = carType.Tinybit;
-            if (testi2c.testReadI2c(I2C_ADD_Maqueen) == 0) cartype = carType.Maqueen;
+        if (cartype == carType.Unknown) {
+            if (testi2c.testReadI2c(I2C_ADD_Tinybit) == 0) {
+                cartype = carType.Tinybit;
+                strip = neopixel.create(DigitalPin.P12, 2)
+            }
+            if (testi2c.testReadI2c(I2C_ADD_Maqueen) == 0)
+            {
+                cartype = carType.Maqueen;
+                strip = neopixel.create(DigitalPin.P15, 4)
+            }
         }
     }
 
@@ -125,24 +130,46 @@ namespace carcotrol {
         }
     }
     /**
-     * Set Big LED to a given color.
+     * Set LED to a given color.
      */
 
-    //% blockId="Tinybit_RGB_Car_Big" block="RGB_Car_Big|color %color"
+    //% blockId="set_LED" block="set LED color|led %pos|color %color"
     //% weight=98 blockGap=10
-    export function RGB_Car_Big(color: enColor): void {
+    export function setLED(pos: enPos, color: enColor): void {
+        if (cartype == carType.Unknown) init();
 
-        setPwmRGB((color & 0xff0000) >> 16, (color & 0x00ff00) >> 8, color & 0x0000ff)
+        if (cartype == carType.Maqueen) {
+            if (pos == enPos.Left || pos == enPos.Both) {
+                pins.digitalWritePin(DigitalPin.P8, color == enColor.black ? 0 : 1)
+            }
+            if (pos == enPos.Right || pos == enPos.Both) {
+                pins.digitalWritePin(DigitalPin.P12, color == enColor.black ? 0 : 1)
+            }
+        } else if (cartype == carType.Tinybit) {
+            setPwmRGB((color & 0xff0000) >> 16, (color & 0x00ff00) >> 8, color & 0x0000ff)
+        }
     }
     /**
-     * Set Big LED to a given color (range 0- 255 for red, green, blue).
+     * Set NeoPixel to a given color (range 0- 255 for red, green, blue).
      */
-    //% blockId="Tinybit_RGB_Car_Big2" block="RGB_Car_Big2|reg %red|green %green|blue %blue"
+    //% blockId="set_NeoPixel" block="set NeoPixel No %no color %color"
     //% weight=97 blockGap=10
-    //% red.min=0 red.max=255 green.min=0 green.max=255 blue.min=0 blue.max=255
-    export function RGB_Car_Big2(red: number, green: number, blue: number): void {
+    export function setNEO(no:number,color:enColor): void {
+        if (cartype == carType.Unknown) init();
 
-        setPwmRGB(red, green, blue);
+        if(cartype==carType.Maqueen){
+            if(no>4) return;
+            if(no==0){
+                for(let i=0;i<4;i++) strip.setPixelColor(i,color);
+            } else strip.setPixelColor(no-1,color);
+            strip.show();
+        } else if (cartype == carType.Tinybit) {
+            if (no > 2) return;
+            if (no == 0) {
+                for (let i = 0; i < 2; i++) strip.setPixelColor(i, color);
+            } else strip.setPixelColor(no-1, color);
+            strip.show();
+        }
     }
 
     /**
@@ -153,6 +180,8 @@ namespace carcotrol {
     //% weight=92 blockGap=10
     //% speed.min=0 speed.max=255
     export function CarCtrlSpeed(index: CarState, speed: number): void {
+        if (cartype == carType.Unknown) init();
+
         switch (index) {
             case CarState.Car_Run: setPwmMotor(speed, speed); break;
             case CarState.Car_Back: setPwmMotor(-speed, -speed); break;
@@ -173,6 +202,8 @@ namespace carcotrol {
     //% weight=91 blockGap=10
     //% speedL.min=-255 speedL.max=255 speedR.min=-255 speedR.max=255
     export function CarCtrlSpeed2(speedL: number, speedR: number): void {
+        if (cartype == carType.Unknown) init();
+
         setPwmMotor(speedL, speedR)
     }
 
@@ -181,15 +212,23 @@ namespace carcotrol {
      */
     //% blockId="Tinybit_Line_Sensor" block="Line_Sensor|direct %direct|value %value"
     //% weight=89 blockGap=10
-    export function Line_Sensor(direct: enPos, value: enLineState): boolean {
+    export function Line_Sensor(direct: enPos): number {
+        if (cartype == carType.Unknown) init();
 
-        pins.setPull(DigitalPin.P13, PinPullMode.PullNone);
-        pins.setPull(DigitalPin.P14, PinPullMode.PullNone);
-        if (direct == enPos.LeftState)
-            return (pins.digitalReadPin(DigitalPin.P13) == value);
-        else if (direct == enPos.RightState)
-            return (pins.digitalReadPin(DigitalPin.P14) == value);
-        return false;
+        if(cartype==carType.Maqueen){
+            if (direct == enPos.Left) {
+                return pins.digitalReadPin(DigitalPin.P13)
+            } else if (direct == enPos.Right) {
+                return pins.digitalReadPin(DigitalPin.P14)
+            }
+
+        } else if(cartype==carType.Tinybit){
+            if (direct == enPos.Left)
+                return pins.digitalReadPin(DigitalPin.P13);
+            else if (direct == enPos.Right)
+                return pins.digitalReadPin(DigitalPin.P14);
+        }
+        return -1;
     }
 
     /**
@@ -198,7 +237,12 @@ namespace carcotrol {
     //% blockId="Tinybit_Voice_Sensor" block="Voice Sensor return"
     //% weight=88 blockGap=10
     export function Voice_Sensor(): number {
-        return pins.analogReadPin(AnalogPin.P1);
+        if (cartype == carType.Unknown) init();
+
+        if(cartype==carType.Tinybit){
+            return pins.analogReadPin(AnalogPin.P1);
+        }
+        return -1;
     }
 
     /**
@@ -207,16 +251,28 @@ namespace carcotrol {
     //% blockId="Tinybit_Ultrasonic_Car" block="ultrasonic return distance(cm)"
     //% weight=87 blockGap=10
     export function Ultrasonic_Car(): number {
-
+        let pinT:number
+        let pinR:number
         let list: Array<number> = [0, 0, 0, 0, 0];
+
+        if (cartype == carType.Unknown) init();
+
+        if(cartype==carType.Maqueen){
+            pinT = DigitalPin.P1
+            pinR = DigitalPin.P2
+        }else      if (cartype == carType.Tinybit) {
+            pinT = DigitalPin.P16
+            pinR = DigitalPin.P15
+        } else return -1;
+
         for (let i = 0; i < 5; i++) {
-            pins.setPull(DigitalPin.P16, PinPullMode.PullNone);
-            pins.digitalWritePin(DigitalPin.P16, 0);
+            pins.setPull(pinT, PinPullMode.PullNone);
+            pins.digitalWritePin(pinT, 0);
             control.waitMicros(2);
-            pins.digitalWritePin(DigitalPin.P16, 1);
+            pins.digitalWritePin(pinT, 1);
             control.waitMicros(15);
-            pins.digitalWritePin(DigitalPin.P16, 0);
-            let d = pins.pulseIn(DigitalPin.P15, PulseValue.High, 43200);
+            pins.digitalWritePin(pinT, 0);
+            let d = pins.pulseIn(pinR, PulseValue.High, 43200);
             list[i] = Math.floor(d / 40);
         }
         list.sort();
