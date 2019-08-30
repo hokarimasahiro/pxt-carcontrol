@@ -1,7 +1,7 @@
 /*
 */
 
-//% color=#006464 weight=20 icon="\uf7d2" block="Car Control"
+//% color=#006464 weight=20 icon="\uf1b6" block="Car Control"
 namespace carcotrol {
 
     let cartype = 0
