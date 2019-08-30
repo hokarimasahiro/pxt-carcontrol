@@ -1,15 +1,22 @@
 /*
-Copyright (C): 2010-2019, Shenzhen Yahboom Tech
-modified from liusen
 */
 
-//% color=#006400 weight=20 icon="\uf1b9"
-namespace Tinybit {
+//% color=#006464 weight=20 icon="\uf5de" block="Car Control"
+namespace carcotrol {
 
-    const PWM_ADD = 0x01
-    const MOTOR = 0x02
-    const RGB = 0x01
+    let cartype = 0
+    let I2C_ADD: number
+    const I2C_ADD_Tinybit = 0x01
+    const I2C_ADD_Maqueen = 0x10
 
+    export enum carType {
+        //% block=Tinybit
+        Tinybit = 1,
+        //% block=Maqueen
+        Maqueen = 2,
+        //% block=unknown
+        unknown = 0
+    }
     export enum enColor {
         //% block=black
         black = 0x000000,
@@ -23,13 +30,12 @@ namespace Tinybit {
         White = 0xffffff,
         //% block=Cyan
         Cyan = 0x00ffff,
-        //% block=Pinkish
-        Pinkish = 0xff00ff,
+        //% block=Pink
+        Pink = 0xff00ff,
         //% block=Yellow
         Yellow = 0xffff00
     }
     export enum enPos {
-
         //% block=LeftState
         LeftState = 0,
         //% block=RightState
@@ -40,13 +46,6 @@ namespace Tinybit {
         White = 0,
         //% block=BlackLine
         Black = 1
-    }
-    export enum enAvoidState {
-        //% block=Obstacle
-        OBSTACLE = 1,
-        //% block=NoObstacle
-        NOOBSTACLE = 0
-
     }
     export enum CarState {
         //% block=Run
@@ -64,36 +63,66 @@ namespace Tinybit {
         //% block=SpinRight
         Car_SpinRight = 7
     }
+    function init() {
+        if (cartype == carType.unknown) {
+            if (testi2c.testReadI2c(I2C_ADD_Tinybit) == 0) cartype = carType.Tinybit;
+            if (testi2c.testReadI2c(I2C_ADD_Maqueen) == 0) cartype = carType.Maqueen;
+        }
+    }
 
     function setPwmRGB(red: number, green: number, blue: number): void {
+        if (cartype != carType.Tinybit) return;
 
         let buf = pins.createBuffer(4);
-        buf[0] = RGB;
+        buf[0] = 0x01;
         buf[1] = red;
         buf[2] = green;
         buf[3] = blue;
 
-        pins.i2cWriteBuffer(PWM_ADD, buf);
+        pins.i2cWriteBuffer(I2C_ADD_Tinybit, buf);
     }
 
-    function setPwmMotor(speed1: number, speed2: number): void {
-        let buf = pins.createBuffer(5);
-        buf[0] = MOTOR;
-        if (speed1 >= 0) {
-            buf[1] = speed1;
-            buf[2] = 0;
-        } else {
-            buf[1] = 0;
-            buf[2] = 0 - speed1;
+    function setPwmMotor(speedL: number, speedR: number): void {
+        if (cartype == carType.Tinybit) {
+            let buf = pins.createBuffer(5);
+            buf[0] = 0x02;
+            if (speedL >= 0) {
+                buf[1] = speedL;
+                buf[2] = 0;
+            } else {
+                buf[1] = 0;
+                buf[2] = 0 - speedL;
+            }
+            if (speedR >= 0) {
+                buf[3] = speedR;
+                buf[4] = 0;
+            } else {
+                buf[3] = 0;
+                buf[4] = 0 - speedR;
+            }
+            pins.i2cWriteBuffer(I2C_ADD_Tinybit, buf);
+        } else if (cartype == carType.Maqueen) {
+            let buf = pins.createBuffer(3);
+            buf[0] = 0x00;
+            if (speedL >= 0) {
+                buf[1] = 0;
+                buf[2] = speedL;
+            } else {
+                buf[1] = 1;
+                buf[2] = 0 - speedL;
+            }
+            pins.i2cWriteBuffer(I2C_ADD_Maqueen, buf);
+
+            buf[0] = 0x02;
+            if (speedR >= 0) {
+                buf[1] = 0;
+                buf[2] = speedR;
+            } else {
+                buf[1] = 1;
+                buf[2] = 0 - speedR;
+            }
+            pins.i2cWriteBuffer(I2C_ADD_Maqueen, buf);
         }
-        if (speed2 >= 0) {
-            buf[3] = speed2;
-            buf[4] = 0;
-        } else {
-            buf[3] = 0;
-            buf[4] = 0 - speed2;
-        }
-        pins.i2cWriteBuffer(PWM_ADD, buf);
     }
     /**
      * Set Big LED to a given color.

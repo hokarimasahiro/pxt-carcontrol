@@ -4,7 +4,8 @@
     "description": "",
     "dependencies": {
         "core": "*",
-        "pxt-neopixel": "github:hokarimasahiro/pxt-neopixel#a030f059dd8751e8e7bf4db0a7d27686d4edb081"
+        "pxt-neopixel": "github:hokarimasahiro/pxt-neopixel#a030f059dd8751e8e7bf4db0a7d27686d4edb081",
+        "pxt-testi2c": "github:hokarimasahiro/pxt-testi2c#ac173a55d8cd4feb5c39a0043099d37f9a743bb4"
     },
     "files": [
         "README.md",
