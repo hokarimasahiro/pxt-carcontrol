@@ -67,8 +67,7 @@ namespace carcotrol {
                 cartype = carType.Tinybit;
                 strip = neopixel.create(DigitalPin.P12, 2)
             }
-            if (testi2c.testReadI2c(I2C_ADD_Maqueen) == 0)
-            {
+            if (testi2c.testReadI2c(I2C_ADD_Maqueen) == 0) {
                 cartype = carType.Maqueen;
                 strip = neopixel.create(DigitalPin.P15, 4)
             }
@@ -154,20 +153,20 @@ namespace carcotrol {
      */
     //% blockId="set_NeoPixel" block="set NeoPixel No %no color %color"
     //% weight=97 blockGap=10
-    export function setNEO(no:number,color:enColor): void {
+    export function setNEO(no: number, color: enColor): void {
         if (cartype == carType.Unknown) init();
 
-        if(cartype==carType.Maqueen){
-            if(no>4) return;
-            if(no==0){
-                for(let i=0;i<4;i++) strip.setPixelColor(i,color);
-            } else strip.setPixelColor(no-1,color);
+        if (cartype == carType.Maqueen) {
+            if (no > 4) return;
+            if (no == 0) {
+                for (let i = 0; i < 4; i++) strip.setPixelColor(i, color);
+            } else strip.setPixelColor(no - 1, color);
             strip.show();
         } else if (cartype == carType.Tinybit) {
             if (no > 2) return;
             if (no == 0) {
                 for (let i = 0; i < 2; i++) strip.setPixelColor(i, color);
-            } else strip.setPixelColor(no-1, color);
+            } else strip.setPixelColor(no - 1, color);
             strip.show();
         }
     }
@@ -215,14 +214,14 @@ namespace carcotrol {
     export function Line_Sensor(direct: enPos): number {
         if (cartype == carType.Unknown) init();
 
-        if(cartype==carType.Maqueen){
+        if (cartype == carType.Maqueen) {
             if (direct == enPos.Left) {
                 return pins.digitalReadPin(DigitalPin.P13)
             } else if (direct == enPos.Right) {
                 return pins.digitalReadPin(DigitalPin.P14)
             }
 
-        } else if(cartype==carType.Tinybit){
+        } else if (cartype == carType.Tinybit) {
             if (direct == enPos.Left)
                 return pins.digitalReadPin(DigitalPin.P13);
             else if (direct == enPos.Right)
@@ -239,7 +238,7 @@ namespace carcotrol {
     export function Voice_Sensor(): number {
         if (cartype == carType.Unknown) init();
 
-        if(cartype==carType.Tinybit){
+        if (cartype == carType.Tinybit) {
             return pins.analogReadPin(AnalogPin.P1);
         }
         return -1;
@@ -251,16 +250,16 @@ namespace carcotrol {
     //% blockId="Tinybit_Ultrasonic_Car" block="ultrasonic return distance(cm)"
     //% weight=87 blockGap=10
     export function Ultrasonic_Car(): number {
-        let pinT:number
-        let pinR:number
+        let pinT: number
+        let pinR: number
         let list: Array<number> = [0, 0, 0, 0, 0];
 
         if (cartype == carType.Unknown) init();
 
-        if(cartype==carType.Maqueen){
+        if (cartype == carType.Maqueen) {
             pinT = DigitalPin.P1
             pinR = DigitalPin.P2
-        }else      if (cartype == carType.Tinybit) {
+        } else if (cartype == carType.Tinybit) {
             pinT = DigitalPin.P16
             pinR = DigitalPin.P15
         } else return -1;
