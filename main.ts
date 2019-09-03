@@ -133,7 +133,7 @@ namespace carcotrol {
      * Set LED to a given color.
      */
 
-    //% blockId="set_LED" block="set LED color|led %pos|color %color=colorRGB"
+    //% blockId="set_LED" block="set LED color|led %pos|color %color=carcontrol_colors"
     //% weight=98 blockGap=10
     export function setLED(pos: Position, color: number): void {
         if (cartype == carType.Unknown) init();
@@ -152,7 +152,7 @@ namespace carcotrol {
     /**
      * Set NeoPixel to a given color.
      */
-    //% blockId="set_Neo Color" block="set NeoColor No %no color %color=colorRGB"
+    //% blockId="set_Neo Color" block="set NeoColor No %no color %color=carcontrol_colors"
     //% weight=97 blockGap=10
     export function setNeoColor(no: number, color: number): void {
         if (cartype == carType.Unknown) init();
@@ -172,6 +172,15 @@ namespace carcotrol {
         }
     }
     /**
+     * Gets the RGB value of a known color
+    */
+    //% weight=2 blockGap=8
+    //% blockId="carcontrol_colors" block="%color"
+    export function colors(color: ColorRGB): number {
+        return color;
+    }
+
+    /**
      * create color in RGB(range 0- 255 for red,green,blue).
      */
     //% blockId="create_color in RBG" block="reate Color |red %red |green %green |blue %blue"
@@ -180,7 +189,7 @@ namespace carcotrol {
     export function createColor(red:number,green:number,blue:number): number {
         if (cartype == carType.Unknown) init();
 
-        return (((red & 0xff) << 16) + ((green & 0xff) << 8)+ (blue & 0xff))
+        return (((red & 0xff) << 16) | ((green & 0xff) << 8) | (blue & 0xff))
     }
     /**
      * Set Brightness for NeoPixel(range 0- 255).
