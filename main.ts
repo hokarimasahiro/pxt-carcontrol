@@ -6,7 +6,7 @@
 namespace carcotrol {
 
     let cartype = 0
-    let strip: neopixel.Strip
+    let stripPin = -1
 
     let I2C_ADD: number
     const I2C_ADD_Tinybit = 0x01
@@ -19,24 +19,6 @@ namespace carcotrol {
         Maqueen = 2,
         //% block=unknown
         Unknown = 0
-    }
-    export enum ColorRGB {
-        //% block=black
-        black = 0x000000,
-        //% block=Red
-        Red = 0xff0000,
-        //% block=Green
-        Green = 0x00ff00,
-        //% block=Blue
-        Blue = 0x0000ff,
-        //% block=White
-        White = 0xffffff,
-        //% block=Cyan
-        Cyan = 0x00ffff,
-        //% block=Pink
-        Pink = 0xff00ff,
-        //% block=Yellow
-        Yellow = 0xffff00
     }
     export enum Position {
         //% block=Left
@@ -66,11 +48,11 @@ namespace carcotrol {
         if (cartype == carType.Unknown) {
             if (testi2c.testReadI2c(I2C_ADD_Tinybit) == 0) {
                 cartype = carType.Tinybit;
-                strip = neopixel.create(DigitalPin.P12, 2)
+                stripPin = DigitalPin.P12
             }
             if (testi2c.testReadI2c(I2C_ADD_Maqueen) == 0) {
                 cartype = carType.Maqueen;
-                strip = neopixel.create(DigitalPin.P15, 4)
+                stripPin = DigitalPin.P15
             }
         }
     }
@@ -133,77 +115,29 @@ namespace carcotrol {
      * Set LED to a given color.
      */
 
-    //% blockId="set_LED" block="set LED color|led %pos|color %color=carcontrol_colors"
+    //% blockId="set_LED" block="set LED color|led %pos|color %color=neopixel_colors"
     //% weight=98 blockGap=10
     export function setLED(pos: Position, color: number): void {
         if (cartype == carType.Unknown) init();
 
         if (cartype == carType.Maqueen) {
             if (pos == Position.Left || pos == Position.Both) {
-                pins.digitalWritePin(DigitalPin.P8, color == ColorRGB.black ? 0 : 1)
+                pins.digitalWritePin(DigitalPin.P8, color == NeoPixelColors.Black ? 0 : 1)
             }
             if (pos == Position.Right || pos == Position.Both) {
-                pins.digitalWritePin(DigitalPin.P12, color == ColorRGB.black ? 0 : 1)
+                pins.digitalWritePin(DigitalPin.P12, color == NeoPixelColors.Black ? 0 : 1)
             }
         } else if (cartype == carType.Tinybit) {
             setPwmRGB((color & 0xff0000) >> 16, (color & 0x00ff00) >> 8, color & 0x0000ff)
         }
     }
     /**
-     * Set NeoPixel to a given color.
-     */
-    //% blockId="set_Neo Color" block="set NeoColor No %no color %color=carcontrol_colors"
-    //% weight=97 blockGap=10
-    export function setNeoColor(no: number, color: number): void {
-        if (cartype == carType.Unknown) init();
-
-        if (cartype == carType.Maqueen) {
-            if (no > 4) return;
-            if (no == 0) {
-                for (let i = 0; i < 4; i++) strip.setPixelColor(i, color);
-            } else strip.setPixelColor(no - 1, color);
-            strip.show();
-        } else if (cartype == carType.Tinybit) {
-            if (no > 2) return;
-            if (no == 0) {
-                for (let i = 0; i < 2; i++) strip.setPixelColor(i, color);
-            } else strip.setPixelColor(no - 1, color);
-            strip.show();
-        }
-    }
-    /**
-     * Gets the RGB value of a known color
+     * Gets pin no on neopixel
     */
-    //% weight=2 blockGap=8
-    //% blockId="carcontrol_colors" block="%color"
-    export function colors(color: ColorRGB): number {
-        return color;
-    }
-
-    /**
-     * create color in RGB(range 0- 255 for red,green,blue).
-     */
-    //% blockId="create_color in RBG" block="reate Color |red %red |green %green |blue %blue"
-    //% weight=97 blockGap=10
-    //% red.min=0 red.max=255 green.min=0 green.max=255 green.min=0 green.max=255
-    export function createColor(red:number,green:number,blue:number): number {
-        if (cartype == carType.Unknown) init();
-
-        return (((red & 0xff) << 16) | ((green & 0xff) << 8) | (blue & 0xff))
-    }
-    /**
-     * Set Brightness for NeoPixel(range 0- 255).
-     * @param brightness in 0-255. eg:50
-     */
-    //% blockId="set_Neo Brightness" block="set Neo Brightness %brightness"
-    //% weight=97 blockGap=10
-    //% brightness.min=0 brightness.max=255
-    export function setNeoBright(brightness: number): void {
-        if (cartype == carType.Unknown) init();
-
-        if (cartype == carType.Maqueen || cartype == carType.Tinybit) {
-            strip.setBrightness(brightness)
-        }
+    //% weight=96 blockGap=10
+    //% blockId="get_neopixel_pin_no" block="get neopixel pin no"
+    export function getNeopixelPinno(): number {
+        return stripPin;
     }
 
     /**
