@@ -1,4 +1,5 @@
 /*
+  robot car control block for Maqueen and Tiny:bit
 */
 
 //% color=#006464 weight=20 icon="\uf1b9" block="Car Control"
@@ -19,7 +20,7 @@ namespace carcotrol {
         //% block=unknown
         Unknown = 0
     }
-    export enum enColor {
+    export enum ColorRGB {
         //% block=black
         black = 0x000000,
         //% block=Red
@@ -37,7 +38,7 @@ namespace carcotrol {
         //% block=Yellow
         Yellow = 0xffff00
     }
-    export enum enPos {
+    export enum Position {
         //% block=Left
         Left = 1,
         //% block=Right
@@ -47,19 +48,19 @@ namespace carcotrol {
     }
     export enum CarState {
         //% block=Run
-        Car_Run = 1,
+        Run = 1,
         //% block=Back
-        Car_Back = 2,
+        Back = 2,
         //% block=Left
-        Car_Left = 3,
+        Left = 3,
         //% block=Right
-        Car_Right = 4,
+        Right = 4,
         //% block=Stop
-        Car_Stop = 5,
+        Stop = 5,
         //% block=SpinLeft
-        Car_SpinLeft = 6,
+        SpinLeft = 6,
         //% block=SpinRight
-        Car_SpinRight = 7
+        SpinRight = 7
     }
     function init() {
         if (cartype == carType.Unknown) {
@@ -134,15 +135,15 @@ namespace carcotrol {
 
     //% blockId="set_LED" block="set LED color|led %pos|color %color"
     //% weight=98 blockGap=10
-    export function setLED(pos: enPos, color: enColor): void {
+    export function setLED(pos: Position, color: ColorRGB): void {
         if (cartype == carType.Unknown) init();
 
         if (cartype == carType.Maqueen) {
-            if (pos == enPos.Left || pos == enPos.Both) {
-                pins.digitalWritePin(DigitalPin.P8, color == enColor.black ? 0 : 1)
+            if (pos == Position.Left || pos == Position.Both) {
+                pins.digitalWritePin(DigitalPin.P8, color == ColorRGB.black ? 0 : 1)
             }
-            if (pos == enPos.Right || pos == enPos.Both) {
-                pins.digitalWritePin(DigitalPin.P12, color == enColor.black ? 0 : 1)
+            if (pos == Position.Right || pos == Position.Both) {
+                pins.digitalWritePin(DigitalPin.P12, color == ColorRGB.black ? 0 : 1)
             }
         } else if (cartype == carType.Tinybit) {
             setPwmRGB((color & 0xff0000) >> 16, (color & 0x00ff00) >> 8, color & 0x0000ff)
@@ -153,7 +154,7 @@ namespace carcotrol {
      */
     //% blockId="set_Neo Color" block="set NeoColor No %no color %color"
     //% weight=97 blockGap=10
-    export function setNeoColor(no: number, color: enColor): void {
+    export function setNeoColor(no: number, color: ColorRGB): void {
         if (cartype == carType.Unknown) init();
 
         if (cartype == carType.Maqueen) {
@@ -176,7 +177,7 @@ namespace carcotrol {
     //% blockId="create_color in RBG" block="reate Color |red %red |green %green |blue %blue"
     //% weight=97 blockGap=10
     //% red.min=0 red.max=255 green.min=0 green.max=255 green.min=0 green.max=255
-    export function createColor(red:number,green:number,blue:number): number {
+    export function createColor(red:number,green:number,blue:number): ColorRGB {
         if (cartype == carType.Unknown) init();
 
         return (((red & 0xff) << 16) + ((green & 0xff) << 8)+ (blue & 0xff))
@@ -207,13 +208,13 @@ namespace carcotrol {
         if (cartype == carType.Unknown) init();
 
         switch (index) {
-            case CarState.Car_Run: setPwmMotor(speed, speed); break;
-            case CarState.Car_Back: setPwmMotor(-speed, -speed); break;
-            case CarState.Car_Left: setPwmMotor(0, speed); break;
-            case CarState.Car_Right: setPwmMotor(speed, 0); break;
-            case CarState.Car_Stop: setPwmMotor(0, 0); break;
-            case CarState.Car_SpinLeft: setPwmMotor(-speed, speed); break;
-            case CarState.Car_SpinRight: setPwmMotor(speed, -speed); break;
+            case CarState.Run: setPwmMotor(speed, speed); break;
+            case CarState.Back: setPwmMotor(-speed, -speed); break;
+            case CarState.Left: setPwmMotor(0, speed); break;
+            case CarState.Right: setPwmMotor(speed, 0); break;
+            case CarState.Stop: setPwmMotor(0, 0); break;
+            case CarState.SpinLeft: setPwmMotor(-speed, speed); break;
+            case CarState.SpinRight: setPwmMotor(speed, -speed); break;
         }
     }
 
@@ -236,20 +237,20 @@ namespace carcotrol {
      */
     //% blockId="Tinybit_Line_Sensor" block="Line_Sensor|direct %direct|value %value"
     //% weight=89 blockGap=10
-    export function Line_Sensor(direct: enPos): number {
+    export function Line_Sensor(direct: Position): number {
         if (cartype == carType.Unknown) init();
 
         if (cartype == carType.Maqueen) {
-            if (direct == enPos.Left) {
+            if (direct == Position.Left) {
                 return pins.digitalReadPin(DigitalPin.P13)
-            } else if (direct == enPos.Right) {
+            } else if (direct == Position.Right) {
                 return pins.digitalReadPin(DigitalPin.P14)
             }
 
         } else if (cartype == carType.Tinybit) {
-            if (direct == enPos.Left)
+            if (direct == Position.Left)
                 return pins.digitalReadPin(DigitalPin.P13);
-            else if (direct == enPos.Right)
+            else if (direct == Position.Right)
                 return pins.digitalReadPin(DigitalPin.P14);
         }
         return -1;
