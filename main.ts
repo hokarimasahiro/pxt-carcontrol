@@ -3,6 +3,38 @@
 */
 
 //% color=#006464 weight=20 icon="\uf1b9" block="Car Control"
+enum carType {
+    //% block=Tinybit
+    Tinybit = 1,
+    //% block=Maqueen
+    Maqueen = 2,
+    //% block=unknown
+    Unknown = 0
+}
+enum Position {
+    //% block=Left
+    Left = 1,
+    //% block=Right
+    Right = 2,
+    //% block=Both
+    Both = 0
+}
+enum CarState {
+    //% block=Run
+    Run = 1,
+    //% block=Back
+    Back = 2,
+    //% block=Left
+    Left = 3,
+    //% block=Right
+    Right = 4,
+    //% block=Stop
+    Stop = 5,
+    //% block=SpinLeft
+    SpinLeft = 6,
+    //% block=SpinRight
+    SpinRight = 7
+}
 namespace carcotrol {
 
     let cartype = 0
@@ -13,38 +45,6 @@ namespace carcotrol {
     const I2C_ADD_Tinybit = 0x01
     const I2C_ADD_Maqueen = 0x10
 
-    export enum carType {
-        //% block=Tinybit
-        Tinybit = 1,
-        //% block=Maqueen
-        Maqueen = 2,
-        //% block=unknown
-        Unknown = 0
-    }
-    export enum Position {
-        //% block=Left
-        Left = 1,
-        //% block=Right
-        Right = 2,
-        //% block=Both
-        Both = 0
-    }
-    export enum CarState {
-        //% block=Run
-        Run = 1,
-        //% block=Back
-        Back = 2,
-        //% block=Left
-        Left = 3,
-        //% block=Right
-        Right = 4,
-        //% block=Stop
-        Stop = 5,
-        //% block=SpinLeft
-        SpinLeft = 6,
-        //% block=SpinRight
-        SpinRight = 7
-    }
     function init() {
         if (cartype == carType.Unknown) {
             if (testi2c.testReadI2c(I2C_ADD_Tinybit) == 0) {
