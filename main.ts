@@ -111,26 +111,7 @@ namespace carcotrol {
             pins.i2cWriteBuffer(I2C_ADD_Maqueen, buf);
         }
     }
-    /**
-     * Set LED to a given color.
-     */
 
-    //% blockId="set_LED" block="set LED color|led %pos|color %color=neopixel_colors"
-    //% weight=98 blockGap=10
-    export function setLED(pos: Position, color: number): void {
-        if (cartype == carType.Unknown) init();
-
-        if (cartype == carType.Maqueen) {
-            if (pos == Position.Left || pos == Position.Both) {
-                pins.digitalWritePin(DigitalPin.P8, color == NeoPixelColors.Black ? 0 : 1)
-            }
-            if (pos == Position.Right || pos == Position.Both) {
-                pins.digitalWritePin(DigitalPin.P12, color == NeoPixelColors.Black ? 0 : 1)
-            }
-        } else if (cartype == carType.Tinybit) {
-            setPwmRGB((color & 0xff0000) >> 16, (color & 0x00ff00) >> 8, color & 0x0000ff)
-        }
-    }
     /**
      * Gets pin no on neopixel
     */
