@@ -4,7 +4,6 @@
     "description": "",
     "dependencies": {
         "core": "*",
-        "pxt-neopixel": "github:hokarimasahiro/pxt-neopixel",
         "pxt-testi2c": "github:hokarimasahiro/pxt-testi2c"
     },
     "files": [
