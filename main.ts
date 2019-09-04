@@ -266,4 +266,16 @@ namespace carcotrol {
             neo.show();
         }
     }
+    /**
+     * Set NeoPixel brightness.
+     * @param brightness in 0-255. eg:50
+     */
+    //% blockId="set_Neo_Brightness" block="set Neo Brightness %brightness"
+    //% weight=97 blockGap=10
+    //% brightness.min=0 brightness.max=255
+    export function setNeoBrightness(brightness: number): void {
+        if (cartype == carType.Unknown) init();
+
+        neo.setBrightness(brightness)
+    }
 }
