@@ -116,7 +116,7 @@ namespace carcotrol {
      * Run the car with the specified action.
      * @param speed Car speed in 0-255. eg:50
      */
-    //% blockId="Tinybit_CarCtrl" block="CarCtrl|%index|speed %speed"
+    //% blockId="CarCtrl" block="CarCtrl|%index|speed %speed"
     //% weight=92 blockGap=10
     //% speed.min=0 speed.max=255
     export function CarCtrl(index: CarState, speed: number): void {
@@ -138,7 +138,7 @@ namespace carcotrol {
      * @param speedL Left Moter Power in 0-255. eg:50
      * @param speedR Right Motor Power in 0-255. eg:50
      */
-    //% blockId="Tinybit_CarCtrl2" block="CarCtrl| speedL %speedL| speedR %speedR"
+    //% blockId="CarCtrl2" block="CarCtrl| speedL %speedL| speedR %speedR"
     //% weight=91 blockGap=10
     //% speedL.min=-255 speedL.max=255 speedR.min=-255 speedR.max=255
     export function CarCtrl2(speedL: number, speedR: number): void {
@@ -150,7 +150,7 @@ namespace carcotrol {
     /**
      * Sense a line color.
      */
-    //% blockId="Tinybit_Line_Sensor" block="Line_Sensor|direct %direct|value %value"
+    //% blockId="Line_Sensor" block="Line_Sensor|direct %direct"
     //% weight=89 blockGap=10
     export function Line_Sensor(direct: Position): number {
         if (cartype == carType.Unknown) init();
@@ -174,7 +174,7 @@ namespace carcotrol {
     /**
      * Get Voice Level.
      */
-    //% blockId="Tinybit_Voice_Sensor" block="Voice Sensor return"
+    //% blockId="Voice_Sensor" block="Voice Sensor"
     //% weight=88 blockGap=10
     export function Voice_Sensor(): number {
         if (cartype == carType.Unknown) init();
@@ -188,7 +188,7 @@ namespace carcotrol {
     /**
      * Get Distance.
      */
-    //% blockId="Tinybit_Ultrasonic_Car" block="ultrasonic return distance(cm)"
+    //% blockId="Ultrasonic_distance" block="ultrasonic distance(cm)"
     //% weight=87 blockGap=10
     export function Ultrasonic_Car(): number {
         let pinT: number
