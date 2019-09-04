@@ -6,7 +6,8 @@
 namespace carcotrol {
 
     let cartype = 0
-    let stripPin = -1
+    let stripPin = DigitalPin.P0
+    let neo: neopixel.Strip
 
     let I2C_ADD: number
     const I2C_ADD_Tinybit = 0x01
@@ -53,6 +54,9 @@ namespace carcotrol {
             if (testi2c.testReadI2c(I2C_ADD_Maqueen) == 0) {
                 cartype = carType.Maqueen;
                 stripPin = DigitalPin.P15
+            }
+            if (cartype != carType.Unknown) {
+                neo = neopixel.create(stripPin, 5)
             }
         }
     }
@@ -221,11 +225,45 @@ namespace carcotrol {
     }
 
     /**
-     * Gets pin no on neopixel
+     * Set LED to a given color.
     */
-    //% weight=85 blockGap=10
-    //% blockId="get_neopixel_pin_no" block="get neopixel pin no"
-    export function getNeopixelPinno(): number {
-        return stripPin;
+
+    //% blockId="set_LED" block="set LED color|led %pos|color %color=neopixel_colors"
+    //% weight=86 blockGap=10
+    export function setLED(pos: Position, color: number): void {
+        if (cartype == carType.Unknown) init();
+
+        if (cartype == carType.Maqueen) {
+            if (pos == Position.Left || pos == Position.Both) {
+                pins.digitalWritePin(DigitalPin.P8, color == NeoPixelColors.Black ? 0 : 1)
+            }
+            if (pos == Position.Right || pos == Position.Both) {
+                pins.digitalWritePin(DigitalPin.P12, color == NeoPixelColors.Black ? 0 : 1)
+            }
+        } else if (cartype == carType.Tinybit) {
+            setPwmRGB((color & 0xff0000) >> 16, (color & 0x00ff00) >> 8, color & 0x0000ff)
+        }
+    }
+    /**
+     * Set NeoPixel to a given color.
+     */
+    //% blockId="set_Neo Color" block="set NeoColor No %no color %color=neopixel_colors"
+    //% weight=97 blockGap=10
+    export function setNeoColor(no: number, color: number): void {
+        if (cartype == carType.Unknown) init();
+
+        if (cartype == carType.Maqueen) {
+            if (no > 4) return;
+            if (no == 0) {
+                for (let i = 0; i < 4; i++) neo.setPixelColor(i, color);
+            } else neo.setPixelColor(no - 1, color);
+            neo.show();
+        } else if (cartype == carType.Tinybit) {
+            if (no > 2) return;
+            if (no == 0) {
+                for (let i = 0; i < 2; i++) neo.setPixelColor(i, color);
+            } else neo.setPixelColor(no - 1, color);
+            neo.show();
+        }
     }
 }
