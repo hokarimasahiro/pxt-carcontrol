@@ -113,15 +113,6 @@ namespace carcotrol {
     }
 
     /**
-     * Gets pin no on neopixel
-    */
-    //% weight=96 blockGap=10
-    //% blockId="get_neopixel_pin_no" block="get neopixel pin no"
-    export function getNeopixelPinno(): number {
-        return stripPin;
-    }
-
-    /**
      * Run the car with the specified action.
      * @param speed Car speed in 0-255. eg:50
      */
@@ -227,5 +218,14 @@ namespace carcotrol {
         list.sort();
         let length = (list[1] + list[2] + list[3]) / 3;
         return Math.floor(length);
+    }
+
+    /**
+     * Gets pin no on neopixel
+    */
+    //% weight=85 blockGap=10
+    //% blockId="get_neopixel_pin_no" block="get neopixel pin no"
+    export function getNeopixelPinno(): number {
+        return stripPin;
     }
 }
