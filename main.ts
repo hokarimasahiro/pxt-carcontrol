@@ -116,10 +116,10 @@ namespace carcotrol {
      * Run the car with the specified action.
      * @param speed Car speed in 0-255. eg:50
      */
-    //% blockId="Tinybit_CarCtrlSpeed" block="CarCtrlSpeed|%index|speed %speed"
+    //% blockId="Tinybit_CarCtrl" block="CarCtrl|%index|speed %speed"
     //% weight=92 blockGap=10
     //% speed.min=0 speed.max=255
-    export function CarCtrlSpeed(index: CarState, speed: number): void {
+    export function CarCtrl(index: CarState, speed: number): void {
         if (cartype == carType.Unknown) init();
 
         switch (index) {
@@ -138,10 +138,10 @@ namespace carcotrol {
      * @param speedL Left Moter Power in 0-255. eg:50
      * @param speedR Right Motor Power in 0-255. eg:50
      */
-    //% blockId="Tinybit_CarCtrlSpeed2" block="CarCtrlSpeed| speedL %speedL| speedR %speedR"
+    //% blockId="Tinybit_CarCtrl2" block="CarCtrl| speedL %speedL| speedR %speedR"
     //% weight=91 blockGap=10
     //% speedL.min=-255 speedL.max=255 speedR.min=-255 speedR.max=255
-    export function CarCtrlSpeed2(speedL: number, speedR: number): void {
+    export function CarCtrl2(speedL: number, speedR: number): void {
         if (cartype == carType.Unknown) init();
 
         setPwmMotor(speedL, speedR)
