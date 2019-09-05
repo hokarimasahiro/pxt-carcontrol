@@ -35,11 +35,65 @@ enum CarState {
     //% block=SpinRight
     SpinRight = 7
 }
+/**
+ * Well known colors for a NeoPixel strip
+ */
+enum NeoPixelColors {
+    //% block=red
+    Red = 0xFF0000,
+    //% block=orange
+    Orange = 0xFFA500,
+    //% block=yellow
+    Yellow = 0xFFFF00,
+    //% block=green
+    Green = 0x00FF00,
+    //% block=blue
+    Blue = 0x0000FF,
+    //% block=indigo
+    Indigo = 0x4b0082,
+    //% block=violet
+    Violet = 0x8a2be2,
+    //% block=purple
+    Purple = 0xFF00FF,
+    //% block=white
+    White = 0xFFFFFF,
+    //% block=black
+    Black = 0x000000
+}
+
+enum NeoPixelPins {
+    //% block=P0
+    P0 = DigitalPin.P0,
+    //% block=P1
+    P1 = DigitalPin.P1,
+    //% block=P2
+    P2 = DigitalPin.P2,
+    //% block=P8
+    P8 = DigitalPin.P8,
+    //% block=P12
+    P12 = DigitalPin.P12,
+    //% block=P13
+    P13 = DigitalPin.P13,
+    //% block=P14
+    P14 = DigitalPin.P14,
+    //% block=P15
+    P15 = DigitalPin.P15,
+    //% block=P16
+    P16 = DigitalPin.P16
+};
+    //% shim=sendBufferAsm
+    function sendBuffer(buf: Buffer, pin: DigitalPin) {
+    }
 namespace carcotrol {
+    //% shim=sendBufferAsm
+    function sendBuffer(buf: Buffer, pin: DigitalPin) {
+    }
 
     let cartype = 0
     let stripPin = DigitalPin.P0
-    let neo: neopixel.Strip
+    let _length=5
+    let buf=pins.createBuffer(_length*3);
+    let brightness: number;
 
     let I2C_ADD: number
     const I2C_ADD_Tinybit = 0x01
@@ -54,9 +108,6 @@ namespace carcotrol {
             if (testi2c.testReadI2c(I2C_ADD_Maqueen) == 0) {
                 cartype = carType.Maqueen;
                 stripPin = DigitalPin.P15
-            }
-            if (cartype != carType.Unknown) {
-                neo = neopixel.create(stripPin, 5)
             }
         }
     }
@@ -245,37 +296,149 @@ namespace carcotrol {
         }
     }
     /**
-     * Set NeoPixel to a given color.
+     * Shows all LEDs to a given color (range 0-255 for r, g, b). 
+     * @param rgb RGB color of the LED
      */
-    //% blockId="set_Neo Color" block="set NeoColor No %no color %color=neopixel_colors"
-    //% weight=97 blockGap=10
-    export function setNeoColor(no: number, color: number): void {
-        if (cartype == carType.Unknown) init();
+    //% blockId="neopixel_set_strip_color" block="%strip|show color %rgb=neopixel_colors" 
+    //% weight=85 blockGap=8
+    //% parts="neopixel"
+    export function showColor(rgb: number) {
+        rgb = rgb >> 0;
+        setAllRGB(rgb);
+        show();
+    }
 
-        if (cartype == carType.Maqueen) {
-            if (no > 4) return;
-            if (no == 0) {
-                for (let i = 0; i < 4; i++) neo.setPixelColor(i, color);
-            } else neo.setPixelColor(no - 1, color);
-            neo.show();
-        } else if (cartype == carType.Tinybit) {
-            if (no > 2) return;
-            if (no == 0) {
-                for (let i = 0; i < 2; i++) neo.setPixelColor(i, color);
-            } else neo.setPixelColor(no - 1, color);
-            neo.show();
-        }
+    /**
+     * Set LED to a given color (range 0-255 for r, g, b). 
+     * You need to call ``show`` to make the changes visible.
+     * @param pixeloffset position of the NeoPixel in the strip
+     * @param rgb RGB color of the LED
+     */
+    //% blockId="neopixel_set_pixel_color" block="%strip|set pixel color at %pixeloffset|to %rgb=neopixel_colors" 
+    //% blockGap=8
+    //% weight=80
+    //% parts="neopixel"
+    export function setPixelColor(pixeloffset: number, rgb: number): void {
+        setPixelRGB(pixeloffset >> 0, rgb >> 0);
+    }
+
+    /**
+     * Send all the changes to the strip.
+     */
+    //% blockId="neopixel_show" block="%strip|show" blockGap=8
+    //% weight=79
+    //% parts="neopixel"
+    export function show() {
+        sendBuffer(buf, stripPin);
+    }
+
+    /**
+     * Turn off all LEDs.
+     * You need to call ``show`` to make the changes visible.
+     */
+    //% blockId="neopixel_clear" block="%strip|clear"
+    //% weight=76
+    //% parts="neopixel"
+    export function clear(): void {
+        buf.fill(0, 0, 5 * 3);
+        show()
     }
     /**
      * Set NeoPixel brightness.
-     * @param brightness in 0-255. eg:50
+     * @param bright in 0-255. eg:50
      */
-    //% blockId="set_Neo_Brightness" block="set Neo Brightness %brightness"
+    //% blockId="set_Neo_Brightness" block="set Neo Brightness %bright"
     //% weight=97 blockGap=10
-    //% brightness.min=0 brightness.max=255
-    export function setNeoBrightness(brightness: number): void {
+    //% bright.min=0 bright.max=255
+    export function setNeoBrightness(bright: number): void {
         if (cartype == carType.Unknown) init();
 
-        neo.setBrightness(brightness)
+        brightness=bright
     }
+        function setBufferRGB(offset: number, red: number, green: number, blue: number): void {
+        buf[offset + 0] = green;
+        buf[offset + 1] = red;
+        buf[offset + 2] = blue;
+    }
+
+        function setAllRGB(rgb: number) {
+        let red = unpackR(rgb);
+        let green = unpackG(rgb);
+        let blue = unpackB(rgb);
+
+        const br = brightness;
+        if (br < 255) {
+            red = (red * br) >> 8;
+            green = (green * br) >> 8;
+            blue = (blue * br) >> 8;
+        }
+        for (let i = 0; i < _length; ++i) {
+            setBufferRGB(i * 3, red, green, blue)
+        }
+    }
+        function setPixelRGB(pixeloffset: number, rgb: number): void {
+        if(pixeloffset < 0
+                || pixeloffset >= _length)
+                return;
+
+        pixeloffset = pixeloffset * 3;
+
+        let red = unpackR(rgb);
+        let green = unpackG(rgb);
+        let blue = unpackB(rgb);
+
+        let br = brightness;
+        if(br < 255) {
+            red = (red * br) >> 8;
+            green = (green * br) >> 8;
+            blue = (blue * br) >> 8;
+        }
+            setBufferRGB(pixeloffset, red, green, blue)
+    }
+        /**
+         * change red and green.
+         * @param rgb eg: 0x00ffc0
+         */
+        //% blockId="neopixel_change_red_and_green" block="%strip|change red and green in %rgb" blockGap=8
+        //% weight=58
+        //% parts="neopixel" advanced=true
+        export function changeRandG(rgb: number): number {
+            return packRGB(unpackG(rgb), unpackR(rgb), unpackB(rgb));
+        }
+
+        /**
+         * Gets the RGB value of a known color
+        */
+        //% weight=2 blockGap=8
+        //% blockId="neopixel_colors" block="%color"
+        //% advanced=true
+        export function colors(color: NeoPixelColors): number {
+            return color;
+        }
+
+        /**
+         * Gets the Pin of a Digital Pin
+        */
+        //% weight=1 blockGap=8
+        //% blockId="neopixel_pins" block="%pins"
+        //% advanced=true
+        export function Pins(pin: NeoPixelPins): number {
+            return pin;
+        }
+
+        function packRGB(a: number, b: number, c: number): number {
+            return ((a & 0xFF) << 16) | ((b & 0xFF) << 8) | (c & 0xFF);
+        }
+        function unpackR(rgb: number): number {
+            let r = (rgb >> 16) & 0xFF;
+            return r;
+        }
+        function unpackG(rgb: number): number {
+            let g = (rgb >> 8) & 0xFF;
+            return g;
+        }
+        function unpackB(rgb: number): number {
+            let b = (rgb) & 0xFF;
+            return b;
+        }
 }
