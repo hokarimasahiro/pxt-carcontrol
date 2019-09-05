@@ -61,26 +61,6 @@ enum NeoPixelColors {
     Black = 0x000000
 }
 
-enum NeoPixelPins {
-    //% block=P0
-    P0 = DigitalPin.P0,
-    //% block=P1
-    P1 = DigitalPin.P1,
-    //% block=P2
-    P2 = DigitalPin.P2,
-    //% block=P8
-    P8 = DigitalPin.P8,
-    //% block=P12
-    P12 = DigitalPin.P12,
-    //% block=P13
-    P13 = DigitalPin.P13,
-    //% block=P14
-    P14 = DigitalPin.P14,
-    //% block=P15
-    P15 = DigitalPin.P15,
-    //% block=P16
-    P16 = DigitalPin.P16
-};
 namespace carcotrol {
     //% shim=sendBufferAsm
     function sendBuffer(buf: Buffer, pin: DigitalPin) {
@@ -276,7 +256,7 @@ namespace carcotrol {
      * Set LED to a given color.
     */
 
-    //% blockId="set_LED" block="set LED color|led %pos|color %color=neopixel_colors"
+    //% blockId="set_LED" block="set LED color|led %pos|color %color=carcontrol_colors"
     //% weight=86 blockGap=10
     export function setLED(pos: Position, color: number): void {
         if (cartype == carType.Unknown) init();
@@ -296,7 +276,7 @@ namespace carcotrol {
      * Shows all LEDs to a given color (range 0-255 for r, g, b). 
      * @param rgb RGB color of the LED
      */
-    //% blockId="neopixel_set_strip_color" block="%strip|show color %rgb=neopixel_colors" 
+    //% blockId="neopixel_set_strip_color" block="%strip|show color %rgb=carcontrol_colors" 
     //% weight=85 blockGap=8
     export function showColor(rgb: number) {
         rgb = rgb >> 0;
@@ -310,7 +290,7 @@ namespace carcotrol {
      * @param pixeloffset position of the NeoPixel in the strip
      * @param rgb RGB color of the LED
      */
-    //% blockId="neopixel_set_pixel_color" block="%strip|set pixel color at %pixeloffset|to %rgb=neopixel_colors" 
+    //% blockId="neopixel_set_pixel_color" block="%strip|set pixel color at %pixeloffset|to %rgb=carcontrol_colors" 
     //% weight=83 blockGap=8
     export function setPixelColor(pixeloffset: number, rgb: number): void {
         setPixelRGB(pixeloffset >> 0, rgb >> 0);
@@ -332,7 +312,7 @@ namespace carcotrol {
     //% blockId="neopixel_clear" block="%strip|clear"
     //% weight=79 blockGap=8
     export function clear(): void {
-        buf.fill(0, 0, 5 * 3);
+        buf.fill(0, 0, _length * 3);
         show()
     }
     /**
@@ -406,16 +386,6 @@ namespace carcotrol {
     //% advanced=true
     export function colors(color: NeoPixelColors): number {
         return color;
-    }
-
-    /**
-     * Gets the Pin of a Digital Pin
-    */
-    //% weight=1 blockGap=8
-    //% blockId="neopixel_pins" block="%pins"
-    //% advanced=true
-    export function Pins(pin: NeoPixelPins): number {
-        return pin;
     }
 
     function packRGB(a: number, b: number, c: number): number {
