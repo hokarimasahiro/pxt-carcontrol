@@ -242,7 +242,7 @@ namespace carcotrol {
      */
     //% blockId="Get_distance" block="get distance(cm)"
     //% weight=87 blockGap=10
-    export function getDisance(): number {
+    export function getDistance(): number {
         let pinT: number
         let pinR: number
         let list: Array<number> = [0, 0, 0, 0, 0];
