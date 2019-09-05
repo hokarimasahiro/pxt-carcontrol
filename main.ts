@@ -81,9 +81,6 @@ enum NeoPixelPins {
     //% block=P16
     P16 = DigitalPin.P16
 };
-    //% shim=sendBufferAsm
-    function sendBuffer(buf: Buffer, pin: DigitalPin) {
-    }
 namespace carcotrol {
     //% shim=sendBufferAsm
     function sendBuffer(buf: Buffer, pin: DigitalPin) {
