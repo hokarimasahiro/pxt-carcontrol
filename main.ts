@@ -240,9 +240,9 @@ namespace carcotrol {
     /**
      * Get Distance.
      */
-    //% blockId="Ultrasonic_distance" block="ultrasonic distance(cm)"
+    //% blockId="Get_distance" block="get distance(cm)"
     //% weight=87 blockGap=10
-    export function Ultrasonic_Car(): number {
+    export function getDisance(): number {
         let pinT: number
         let pinR: number
         let list: Array<number> = [0, 0, 0, 0, 0];
@@ -298,7 +298,6 @@ namespace carcotrol {
      */
     //% blockId="neopixel_set_strip_color" block="%strip|show color %rgb=neopixel_colors" 
     //% weight=85 blockGap=8
-    //% parts="neopixel"
     export function showColor(rgb: number) {
         rgb = rgb >> 0;
         setAllRGB(rgb);
@@ -314,7 +313,6 @@ namespace carcotrol {
     //% blockId="neopixel_set_pixel_color" block="%strip|set pixel color at %pixeloffset|to %rgb=neopixel_colors" 
     //% blockGap=8
     //% weight=80
-    //% parts="neopixel"
     export function setPixelColor(pixeloffset: number, rgb: number): void {
         setPixelRGB(pixeloffset >> 0, rgb >> 0);
     }
@@ -324,7 +322,6 @@ namespace carcotrol {
      */
     //% blockId="neopixel_show" block="%strip|show" blockGap=8
     //% weight=79
-    //% parts="neopixel"
     export function show() {
         sendBuffer(buf, stripPin);
     }
@@ -335,7 +332,6 @@ namespace carcotrol {
      */
     //% blockId="neopixel_clear" block="%strip|clear"
     //% weight=76
-    //% parts="neopixel"
     export function clear(): void {
         buf.fill(0, 0, 5 * 3);
         show()
@@ -398,7 +394,7 @@ namespace carcotrol {
          */
         //% blockId="neopixel_change_red_and_green" block="%strip|change red and green in %rgb" blockGap=8
         //% weight=58
-        //% parts="neopixel" advanced=true
+        //% advanced=true
         export function changeRandG(rgb: number): number {
             return packRGB(unpackG(rgb), unpackR(rgb), unpackB(rgb));
         }
