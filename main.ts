@@ -311,8 +311,7 @@ namespace carcotrol {
      * @param rgb RGB color of the LED
      */
     //% blockId="neopixel_set_pixel_color" block="%strip|set pixel color at %pixeloffset|to %rgb=neopixel_colors" 
-    //% blockGap=8
-    //% weight=80
+    //% weight=83 blockGap=8
     export function setPixelColor(pixeloffset: number, rgb: number): void {
         setPixelRGB(pixeloffset >> 0, rgb >> 0);
     }
@@ -320,8 +319,8 @@ namespace carcotrol {
     /**
      * Send all the changes to the strip.
      */
-    //% blockId="neopixel_show" block="%strip|show" blockGap=8
-    //% weight=79
+    //% blockId="neopixel_show" block="%strip|show"
+    //% weight=81 blockGap=8
     export function show() {
         sendBuffer(buf, stripPin);
     }
@@ -331,7 +330,7 @@ namespace carcotrol {
      * You need to call ``show`` to make the changes visible.
      */
     //% blockId="neopixel_clear" block="%strip|clear"
-    //% weight=76
+    //% weight=79 blockGap=8
     export function clear(): void {
         buf.fill(0, 0, 5 * 3);
         show()
@@ -341,20 +340,20 @@ namespace carcotrol {
      * @param bright in 0-255. eg:50
      */
     //% blockId="set_Neo_Brightness" block="set Neo Brightness %bright"
-    //% weight=97 blockGap=10
+    //% weight=77 blockGap=8
     //% bright.min=0 bright.max=255
     export function setNeoBrightness(bright: number): void {
         if (cartype == carType.Unknown) init();
 
         brightness=bright
     }
-        function setBufferRGB(offset: number, red: number, green: number, blue: number): void {
+    function setBufferRGB(offset: number, red: number, green: number, blue: number): void {
         buf[offset + 0] = green;
         buf[offset + 1] = red;
         buf[offset + 2] = blue;
     }
 
-        function setAllRGB(rgb: number) {
+    function setAllRGB(rgb: number) {
         let red = unpackR(rgb);
         let green = unpackG(rgb);
         let blue = unpackB(rgb);
@@ -369,7 +368,7 @@ namespace carcotrol {
             setBufferRGB(i * 3, red, green, blue)
         }
     }
-        function setPixelRGB(pixeloffset: number, rgb: number): void {
+    function setPixelRGB(pixeloffset: number, rgb: number): void {
         if(pixeloffset < 0
                 || pixeloffset >= _length)
                 return;
@@ -388,50 +387,50 @@ namespace carcotrol {
         }
             setBufferRGB(pixeloffset, red, green, blue)
     }
-        /**
-         * change red and green.
-         * @param rgb eg: 0x00ffc0
-         */
-        //% blockId="neopixel_change_red_and_green" block="%strip|change red and green in %rgb" blockGap=8
-        //% weight=58
-        //% advanced=true
-        export function changeRandG(rgb: number): number {
-            return packRGB(unpackG(rgb), unpackR(rgb), unpackB(rgb));
-        }
+    /**
+     * change red and green.
+     * @param rgb eg: 0x00ffc0
+     */
+    //% blockId="neopixel_change_red_and_green" block="%strip|change red and green in %rgb"
+    //% weight=75 blockGap=8
+    //% advanced=true
+    export function changeRandG(rgb: number): number {
+        return packRGB(unpackG(rgb), unpackR(rgb), unpackB(rgb));
+    }
 
-        /**
-         * Gets the RGB value of a known color
-        */
-        //% weight=2 blockGap=8
-        //% blockId="neopixel_colors" block="%color"
-        //% advanced=true
-        export function colors(color: NeoPixelColors): number {
-            return color;
-        }
+    /**
+     * Gets the RGB value of a known color
+    */
+    //% weight=2 blockGap=8
+    //% blockId="neopixel_colors" block="%color"
+    //% advanced=true
+    export function colors(color: NeoPixelColors): number {
+        return color;
+    }
 
-        /**
-         * Gets the Pin of a Digital Pin
-        */
-        //% weight=1 blockGap=8
-        //% blockId="neopixel_pins" block="%pins"
-        //% advanced=true
-        export function Pins(pin: NeoPixelPins): number {
-            return pin;
-        }
+    /**
+     * Gets the Pin of a Digital Pin
+    */
+    //% weight=1 blockGap=8
+    //% blockId="neopixel_pins" block="%pins"
+    //% advanced=true
+    export function Pins(pin: NeoPixelPins): number {
+        return pin;
+    }
 
-        function packRGB(a: number, b: number, c: number): number {
-            return ((a & 0xFF) << 16) | ((b & 0xFF) << 8) | (c & 0xFF);
-        }
-        function unpackR(rgb: number): number {
-            let r = (rgb >> 16) & 0xFF;
-            return r;
-        }
-        function unpackG(rgb: number): number {
-            let g = (rgb >> 8) & 0xFF;
-            return g;
-        }
-        function unpackB(rgb: number): number {
-            let b = (rgb) & 0xFF;
-            return b;
-        }
+    function packRGB(a: number, b: number, c: number): number {
+        return ((a & 0xFF) << 16) | ((b & 0xFF) << 8) | (c & 0xFF);
+    }
+    function unpackR(rgb: number): number {
+        let r = (rgb >> 16) & 0xFF;
+        return r;
+    }
+    function unpackG(rgb: number): number {
+        let g = (rgb >> 8) & 0xFF;
+        return g;
+    }
+    function unpackB(rgb: number): number {
+        let b = (rgb) & 0xFF;
+        return b;
+    }
 }
