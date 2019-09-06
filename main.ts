@@ -387,7 +387,7 @@ namespace carcotrol {
      * change red and green.
      * @param rgb eg: 0x00ffc0
      */
-    //% blockId="neopixel_change_red_and_green" block="%strip|change red and green in %rgb"
+    //% blockId="neopixel_change_red_and_green" block="change red and green in %rgb"
     //% weight=75 blockGap=8
     //% advanced=true
     export function changeRandG(rgb: number): number {
