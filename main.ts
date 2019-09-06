@@ -276,9 +276,9 @@ namespace carcotrol {
      * Shows all LEDs to a given color (range 0-255 for r, g, b). 
      * @param rgb RGB color of the LED
      */
-    //% blockId="neopixel_set_strip_color" block="show color %rgb=carcontrol_colors" 
+    //% blockId="set_set_color" block="set neo color %rgb=carcontrol_colors" 
     //% weight=85 blockGap=8
-    export function showColor(rgb: number) {
+    export function setNeoColor(rgb: number) {
         rgb = rgb >> 0;
         setAllRGB(rgb);
         show();
@@ -287,13 +287,14 @@ namespace carcotrol {
     /**
      * Set LED to a given color (range 0-255 for r, g, b). 
      * You need to call ``show`` to make the changes visible.
-     * @param pixeloffset position of the NeoPixel in the strip
+     * @param pixeloffset position of the Neo
      * @param rgb RGB color of the LED
      */
-    //% blockId="neopixel_set_pixel_color" block="set pixel color at %pixeloffset|to %rgb=carcontrol_colors" 
+    //% blockId="et_neo_pixel_color" block="set neo pixel color at %pixeloffset|to %rgb=carcontrol_colors" 
     //% weight=83 blockGap=8
-    export function setPixelColor(pixeloffset: number, rgb: number): void {
+    export function setNeoPixelColor(pixeloffset: number, rgb: number): void {
         setPixelRGB(pixeloffset >> 0, rgb >> 0);
+        show();
     }
 
     /**
@@ -301,6 +302,7 @@ namespace carcotrol {
      */
     //% blockId="neopixel_show" block="%strip|show"
     //% weight=81 blockGap=8
+    //% advanced=true
     export function show() {
         sendBuffer(buf, stripPin);
     }
@@ -311,6 +313,7 @@ namespace carcotrol {
      */
     //% blockId="neopixel_clear" block="%strip|clear"
     //% weight=79 blockGap=8
+    //% advanced=true
     export function clear(): void {
         buf.fill(0, 0, _length * 3);
         show()
