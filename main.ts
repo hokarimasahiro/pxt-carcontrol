@@ -276,7 +276,7 @@ namespace carcotrol {
      * Shows all LEDs to a given color (range 0-255 for r, g, b). 
      * @param rgb RGB color of the LED
      */
-    //% blockId="neopixel_set_strip_color" block="%strip|show color %rgb=carcontrol_colors" 
+    //% blockId="neopixel_set_strip_color" block="show color %rgb=carcontrol_colors" 
     //% weight=85 blockGap=8
     export function showColor(rgb: number) {
         rgb = rgb >> 0;
