@@ -180,6 +180,16 @@ namespace carcotrol {
     }
 
     /**
+     * get a car type.
+     */
+    //% blockId="get_car_type" block="get car type"
+    //% weight=90 blockGap=10
+    //% advanced=true
+    export function getCarType(): carType {
+        return cartype
+    }
+
+    /**
      * Sense a line color.
      */
     //% blockId="Line_Sensor" block="Line_Sensor|direct %direct"
