@@ -82,6 +82,7 @@ namespace carcotrol {
                 cartype = carType.Tinybit;
                 stripPin = DigitalPin.P12
             }
+            pins.i2cWriteNumber(I2C_ADD_Maqueen, 50, NumberFormat.UInt8BE);
             if (testi2c.testReadI2c(I2C_ADD_Maqueen) == 0) {
                 cartype = carType.Maqueen;
                 stripPin = DigitalPin.P15
