@@ -186,6 +186,7 @@ namespace carcotrol {
     //% weight=90 blockGap=10
     //% advanced=true
     export function getCarType(): carType {
+        if (cartype == carType.Unknown) init();
         return cartype
     }
 
