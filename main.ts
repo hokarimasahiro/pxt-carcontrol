@@ -120,8 +120,6 @@ namespace carcotrol {
             }
             pins.i2cWriteBuffer(I2C_ADD_Tinybit, buf);
         } else if (cartype == carType.Maqueen) {
-
-            basic.showNumber(speedL)
             let buf = pins.createBuffer(3);
             buf[0] = 0x00;
             if (speedL >= 0) {
