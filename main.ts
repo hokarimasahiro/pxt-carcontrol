@@ -37,7 +37,7 @@ enum CarState {
 /**
  * Well known colors for a NeoPixel strip
  */
-enum NeoPixelColors {
+enum RGBColors {
     //% block=red
     Red = 0xFF0000,
     //% block=orange
@@ -263,10 +263,10 @@ namespace carcotrol {
 
         if (cartype == carType.Maqueen) {
             if (pos == Position.Left || pos == Position.Both) {
-                pins.digitalWritePin(DigitalPin.P8, color == NeoPixelColors.Black ? 0 : 1)
+                pins.digitalWritePin(DigitalPin.P8, color == RGBColors.Black ? 0 : 1)
             }
             if (pos == Position.Right || pos == Position.Both) {
-                pins.digitalWritePin(DigitalPin.P12, color == NeoPixelColors.Black ? 0 : 1)
+                pins.digitalWritePin(DigitalPin.P12, color == RGBColors.Black ? 0 : 1)
             }
         } else if (cartype == carType.Tinybit) {
             setPwmRGB((color & 0xff0000) >> 16, (color & 0x00ff00) >> 8, color & 0x0000ff)
@@ -290,7 +290,7 @@ namespace carcotrol {
      * @param pixeloffset position of the NeoPixel in the strip
      * @param rgb RGB color of the LED
      */
-    //% blockId="neopixel_set_pixel_color" block="%strip|set pixel color at %pixeloffset|to %rgb=carcontrol_colors" 
+    //% blockId="neopixel_set_pixel_color" block="set pixel color at %pixeloffset|to %rgb=carcontrol_colors" 
     //% weight=83 blockGap=8
     export function setPixelColor(pixeloffset: number, rgb: number): void {
         setPixelRGB(pixeloffset >> 0, rgb >> 0);
@@ -384,7 +384,7 @@ namespace carcotrol {
     //% weight=2 blockGap=8
     //% blockId="neopixel_colors" block="%color"
     //% advanced=true
-    export function colors(color: NeoPixelColors): number {
+    export function colors(color: RGBColors): number {
         return color;
     }
 
