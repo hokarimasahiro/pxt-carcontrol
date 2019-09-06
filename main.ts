@@ -2,7 +2,6 @@
   robot car control block for Maqueen and Tiny:bit
 */
 
-//% color=#006464 weight=20 icon="\uf1b9" block="Car Control"
 enum carType {
     //% block=Tinybit
     Tinybit = 1,
@@ -61,6 +60,7 @@ enum NeoPixelColors {
     Black = 0x000000
 }
 
+//% color=#006464 weight=20 icon="\uf1b9" block="Car Control"
 namespace carcotrol {
     //% shim=sendBufferAsm
     function sendBuffer(buf: Buffer, pin: DigitalPin) {
