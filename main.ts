@@ -375,6 +375,7 @@ namespace carcotrol {
      */
     //% weight=1
     //% blockId="neopixel_rgb" block="red %red|green %green|blue %blue"
+    //% red.min=0 red.max=255 green.min=0 green.max=255 blue.min=0 blue.max=255
     export function rgb(red: number, green: number, blue: number): number {
         return packRGB(red, green, blue);
     }
