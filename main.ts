@@ -382,7 +382,7 @@ namespace carcotrol {
      * Gets the RGB value of a known color
     */
     //% weight=2 blockGap=8
-    //% blockId="neopixel_colors" block="%color"
+    //% blockId="carcontrol_colors" block="%color"
     //% advanced=true
     export function colors(color: RGBColors): number {
         return color;
