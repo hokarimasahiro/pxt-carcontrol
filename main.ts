@@ -181,7 +181,18 @@ namespace carcotrol {
     }
 
     /**
-     * get a car type.
+     * set car type.
+     * @param carType carType in carType. eg:carType.Maqueen
+     */
+    //% blockId="set_car_type" block="set car type|%carType"
+    //% weight=90 blockGap=10
+    //% advanced=true
+    export function setCarType(type:carType): void {
+        cartype = type
+    }
+
+    /**
+     * get car type.
      */
     //% blockId="get_car_type" block="get car type"
     //% weight=90 blockGap=10
