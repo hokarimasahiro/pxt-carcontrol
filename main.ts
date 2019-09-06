@@ -396,7 +396,6 @@ namespace carcotrol {
     */
     //% weight=2 blockGap=8
     //% blockId="carcontrol_colors" block="%color"
-    //% advanced=true
     export function colors(color: RGBColors): number {
         return color;
     }
