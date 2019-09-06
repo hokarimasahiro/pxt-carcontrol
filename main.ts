@@ -187,7 +187,6 @@ namespace carcotrol {
     //% advanced=true
     export function setCarType(type: carType): void {
         cartype = type
-        basic.showNumber(cartype)
     }
 
     /**
