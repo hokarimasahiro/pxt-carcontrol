@@ -68,8 +68,8 @@ namespace carcotrol {
 
     let cartype = 0
     let stripPin = DigitalPin.P0
-    let _length=5
-    let buf=pins.createBuffer(_length*3);
+    let _length = 5
+    let buf = pins.createBuffer(_length * 3);
     let brightness: number;
 
     let I2C_ADD: number
@@ -120,6 +120,8 @@ namespace carcotrol {
             }
             pins.i2cWriteBuffer(I2C_ADD_Tinybit, buf);
         } else if (cartype == carType.Maqueen) {
+
+            basic.showNumber(speedL)
             let buf = pins.createBuffer(3);
             buf[0] = 0x00;
             if (speedL >= 0) {
@@ -185,8 +187,9 @@ namespace carcotrol {
     //% blockId="set_car_type" block="set car type|%carType"
     //% weight=90 blockGap=10
     //% advanced=true
-    export function setCarType(type:carType): void {
+    export function setCarType(type: carType): void {
         cartype = type
+        basic.showNumber(cartype)
     }
 
     /**
@@ -325,12 +328,12 @@ namespace carcotrol {
     //% weight=81 blockGap=8
     //% advanced=true
     export function show() {
-        let Pin:DigitalPin
+        let Pin: DigitalPin
 
-        if (cartype==carType.Unknown) return;
-        if(cartype==carType.Tinybit) Pin=DigitalPin.P12;
+        if (cartype == carType.Unknown) return;
+        if (cartype == carType.Tinybit) Pin = DigitalPin.P12;
         if (cartype == carType.Maqueen) Pin = DigitalPin.P15;
-        
+
         sendBuffer(buf, Pin);
     }
 
@@ -355,7 +358,7 @@ namespace carcotrol {
     export function setNeoBrightness(bright: number): void {
         if (cartype == carType.Unknown) init();
 
-        brightness=bright
+        brightness = bright
     }
     function setBufferRGB(offset: number, red: number, green: number, blue: number): void {
         buf[offset + 0] = green;
@@ -379,9 +382,9 @@ namespace carcotrol {
         }
     }
     function setPixelRGB(pixeloffset: number, rgb: number): void {
-        if(pixeloffset < 0
-                || pixeloffset >= _length)
-                return;
+        if (pixeloffset < 0
+            || pixeloffset >= _length)
+            return;
 
         pixeloffset = pixeloffset * 3;
 
@@ -390,12 +393,12 @@ namespace carcotrol {
         let blue = unpackB(rgb);
 
         let br = brightness;
-        if(br < 255) {
+        if (br < 255) {
             red = (red * br) >> 8;
             green = (green * br) >> 8;
             blue = (blue * br) >> 8;
         }
-            setBufferRGB(pixeloffset, red, green, blue)
+        setBufferRGB(pixeloffset, red, green, blue)
     }
     /**
      * Converts red, green, blue channels into a RGB color
