@@ -80,12 +80,10 @@ namespace carcotrol {
         if (cartype == carType.Unknown) {
             if (testi2c.testReadI2c(I2C_ADD_Tinybit) == 0) {
                 cartype = carType.Tinybit;
-                stripPin = DigitalPin.P12
             }
             pins.i2cWriteNumber(I2C_ADD_Maqueen, 50, NumberFormat.UInt8BE);
             if (testi2c.testReadI2c(I2C_ADD_Maqueen) == 0) {
                 cartype = carType.Maqueen;
-                stripPin = DigitalPin.P15
             }
         }
     }
@@ -327,7 +325,13 @@ namespace carcotrol {
     //% weight=81 blockGap=8
     //% advanced=true
     export function show() {
-        sendBuffer(buf, stripPin);
+        let Pin:DigitalPin
+
+        if (cartype==carType.Unknown) return;
+        if(cartype==carType.Tinybit) Pin=DigitalPin.P12;
+        if (cartype == carType.Maqueen) Pin = DigitalPin.P15;
+        
+        sendBuffer(buf, Pin);
     }
 
     /**
