@@ -251,19 +251,17 @@ namespace carcotrol {
             pinR = DigitalPin.P15
         } else return -1;
 
-        for (let i = 0; i < 5; i++) {
-            pins.setPull(pinT, PinPullMode.PullNone);
-            pins.digitalWritePin(pinT, 0);
-            control.waitMicros(2);
-            pins.digitalWritePin(pinT, 1);
-            control.waitMicros(15);
-            pins.digitalWritePin(pinT, 0);
-            let d = pins.pulseIn(pinR, PulseValue.High, 43200);
-            list[i] = Math.floor(d / 40);
-        }
-        list.sort();
-        let length = (list[1] + list[2] + list[3]) / 3;
-        return Math.floor(length);
+        pins.setPull(pinT, PinPullMode.PullNone);
+        pins.digitalWritePin(pinT, 0);
+        control.waitMicros(2);
+        pins.digitalWritePin(pinT, 1);
+        control.waitMicros(10);
+        pins.digitalWritePin(pinT, 0);
+        pins.setPull(pinR, PinPullMode.PullUp);
+
+        let d = pins.pulseIn(pinR, PulseValue.High, 43200);
+
+        return d / 42;
     }
 
     /**
