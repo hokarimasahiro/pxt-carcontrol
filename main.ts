@@ -78,6 +78,10 @@ namespace carcotrol {
 
     function init() {
         if (cartype == carType.Unknown) {
+            pins.setPull(DigitalPin.P2,PinPullMode.PullUp)
+            if(pins.digitalReadPin(DigitalPin.P2)==1) cartype=carType.Tinybit;
+            else cartype=carType.Maqueen
+            pins.setPull(DigitalPin.P2, PinPullMode.PullNone)
         }
     }
 
@@ -237,6 +241,7 @@ namespace carcotrol {
     //% blockId="Get_distance" block="get distance(cm)"
     //% weight=87 blockGap=10
     export function getDistance(): number {
+        const usParCm=58    // 1000000[uS] / (340[m/S](sped of sound) * 100(cm)) * 2(round trip)
         let pinT: number
         let pinR: number
         let list: Array<number> = [0, 0, 0, 0, 0];
@@ -257,11 +262,10 @@ namespace carcotrol {
         pins.digitalWritePin(pinT, 1);
         control.waitMicros(10);
         pins.digitalWritePin(pinT, 0);
-        pins.setPull(pinR, PinPullMode.PullUp);
 
-        let d = pins.pulseIn(pinR, PulseValue.High, 43200);
+        let d = pins.pulseIn(pinR, PulseValue.High, 800 * usParCm);
 
-        return d / 42;
+        return d / usParCm;
     }
 
     /**
