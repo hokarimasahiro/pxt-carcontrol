@@ -200,7 +200,7 @@ namespace carcotrol {
     /**
      * car type.
      */
-    //% blockId="car_type" block="car type"
+    //% blockId="car_type" block="%type"
     //% weight=90 blockGap=10
     //% advanced=true
     export function carType_v(type:carType): number {
