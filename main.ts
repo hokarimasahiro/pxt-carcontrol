@@ -236,14 +236,14 @@ namespace carcotrol {
      */
     //% blockId="Voice_Sensor" block="Voice Sensor"
     //% weight=88 blockGap=10
-    export function Voice_Sensor(): number {
+    /*export function Voice_Sensor(): number {
         if (cartype == carType.Unknown) init();
 
         if (cartype == carType.Tinybit) {
             return pins.analogReadPin(AnalogPin.P1);
         }
         return -1;
-    }
+    }*/
 
     /**
      * Get Distance.
