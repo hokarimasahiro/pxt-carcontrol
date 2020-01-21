@@ -224,9 +224,9 @@ namespace carcotrol {
 
         } else if (cartype == carType.Tinybit) {
             if (direct == Position.Left)
-                return pins.digitalReadPin(DigitalPin.P13);
+                return 1 - pins.digitalReadPin(DigitalPin.P13);
             else if (direct == Position.Right)
-                return pins.digitalReadPin(DigitalPin.P14);
+                return 1 - pins.digitalReadPin(DigitalPin.P14);
         }
         return -1;
     }
