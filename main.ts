@@ -164,15 +164,15 @@ namespace carcotrol {
                 pins.digitalWritePin(DigitalPin.P12, 0)
                 pins.analogWritePin(AnalogPin.P8, speedL * 4);
             } else {
-                pins.digitalWritePin(DigitalPin.P12, 1)
-                pins.analogWritePin(AnalogPin.P8, (255 + speedL) * 4);
+                pins.digitalWritePin(DigitalPin.P8, 0)
+                pins.analogWritePin(AnalogPin.P12, (0 - speedL) * 4);
             }
             if (speedR >= 0) {
                 pins.digitalWritePin(DigitalPin.P16, 0)
-                pins.analogWritePin(AnalogPin.P14, speedL * 4);
+                pins.analogWritePin(AnalogPin.P14, speedR * 4);
             } else {
-                pins.digitalWritePin(DigitalPin.P16, 1)
-                pins.analogWritePin(AnalogPin.P14, (255 + speedL) * 4);
+                pins.digitalWritePin(DigitalPin.P14, 0)
+                pins.analogWritePin(AnalogPin.P16, (0 - speedR) * 4);
             }
         }
     }
