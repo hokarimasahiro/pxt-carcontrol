@@ -162,17 +162,17 @@ namespace carcotrol {
         } else if (cartype == carType.Ecocar) {
             if (speedL >= 0) {
                 pins.digitalWritePin(DigitalPin.P12, 0)
-                pins.analogWritePin(AnalogPin.P8, speedL);
+                pins.analogWritePin(AnalogPin.P8, speedL * 4);
             } else {
                 pins.digitalWritePin(DigitalPin.P8, 0)
-                pins.analogWritePin(AnalogPin.P12, 0 - speedL);
+                pins.analogWritePin(AnalogPin.P12, (0 - speedL) * 4);
             }
             if (speedR >= 0) {
                 pins.digitalWritePin(DigitalPin.P16, 0)
-                pins.analogWritePin(AnalogPin.P14, speedL);
+                pins.analogWritePin(AnalogPin.P14, speedL * 4);
             } else {
                 pins.digitalWritePin(DigitalPin.P14, 0)
-                pins.analogWritePin(AnalogPin.P16, 0 - speedL);
+                pins.analogWritePin(AnalogPin.P16, (0 - speedL) * 4);
             }
         }
     }
