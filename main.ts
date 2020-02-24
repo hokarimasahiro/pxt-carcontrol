@@ -9,6 +9,8 @@ enum carType {
     Maqueen = 2,
     //% block=Roomba
     Roomba = 3,
+    //% block=Ecocar
+    Ecocar = 4,
     //% block=unknown
     Unknown = 0
 }
@@ -140,24 +142,39 @@ namespace carcotrol {
             }
             pins.i2cWriteBuffer(I2C_ADD_Maqueen, buf);
         } else if (cartype == carType.Roomba) {
-        let buf = pins.createBuffer(5);
-        buf[0] = 146;
-        if (speedL >= 0) {
-            buf[1] = 0;
-            buf[2] = speedL;
-        } else {
-            buf[1] = 255;
-            buf[2] = speedL;
+            let buf = pins.createBuffer(5);
+            buf[0] = 146;
+            if (speedL >= 0) {
+                buf[1] = 0;
+                buf[2] = speedL;
+            } else {
+                buf[1] = 255;
+                buf[2] = speedL;
+            }
+            if (speedR >= 0) {
+                buf[3] = 0;
+                buf[4] = speedR;
+            } else {
+                buf[3] = 255;
+                buf[4] = speedR;
+            }
+            serial.writeBuffer(buf);
+        } else if (cartype == carType.Ecocar) {
+            if (speedL >= 0) {
+                pins.digitalWritePin(DigitalPin.P12, 0)
+                pins.analogWritePin(AnalogPin.P8, speedL);
+            } else {
+                pins.digitalWritePin(DigitalPin.P8, 0)
+                pins.analogWritePin(AnalogPin.P12, 0 - speedL);
+            }
+            if (speedR >= 0) {
+                pins.digitalWritePin(DigitalPin.P16, 0)
+                pins.analogWritePin(AnalogPin.P14, speedL);
+            } else {
+                pins.digitalWritePin(DigitalPin.P14, 0)
+                pins.analogWritePin(AnalogPin.P16, 0 - speedL);
+            }
         }
-        if (speedR >= 0) {
-            buf[3] = 0;
-            buf[4] = speedR;
-        } else {
-            buf[3] = 255;
-            buf[4] = speedR;
-        }
-        serial.writeBuffer(buf);
-    }
     }
 
     /**
@@ -204,9 +221,9 @@ namespace carcotrol {
     //% advanced=true
     export function setCarType(type: carType): void {
         cartype = type
-        if(cartype==carType.Roomba){
-            let buf=pins.createBuffer(1);
-            buf[0]=131;
+        if (cartype == carType.Roomba) {
+            let buf = pins.createBuffer(1);
+            buf[0] = 131;
             serial.writeBuffer(buf)
         }
     }
@@ -252,6 +269,11 @@ namespace carcotrol {
                 return 1 - pins.digitalReadPin(DigitalPin.P13);
             else if (direct == Position.Right)
                 return 1 - pins.digitalReadPin(DigitalPin.P14);
+        } else if (cartype == carType.Ecocar) {
+            if (direct == Position.Left)
+                return 1 - pins.digitalReadPin(DigitalPin.P1);
+            else if (direct == Position.Right)
+                return 1 - pins.digitalReadPin(DigitalPin.P2);
         }
         return -1;
     }
@@ -360,6 +382,7 @@ namespace carcotrol {
         if (cartype == carType.Unknown) return;
         if (cartype == carType.Tinybit) Pin = DigitalPin.P12;
         if (cartype == carType.Maqueen) Pin = DigitalPin.P15;
+        if (cartype == carType.Ecocar) Pin = DigitalPin.P0;
 
         sendBuffer(buf, Pin);
     }
