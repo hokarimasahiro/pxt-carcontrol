@@ -271,9 +271,9 @@ namespace carcotrol {
                 return 1 - pins.digitalReadPin(DigitalPin.P14);
         } else if (cartype == carType.Ecocar) {
             if (direct == Position.Left)
-                return pins.analogReadPin(AnalogPin.P1) < 800 ? 1 : 0;
+                return pins.analogReadPin(AnalogPin.P1) < 850 ? 1 : 0;
             else if (direct == Position.Right)
-                return pins.analogReadPin(AnalogPin.P2) < 800 ? 1 : 0;
+                return pins.analogReadPin(AnalogPin.P2) < 850 ? 1 : 0;
         }
         return -1;
     }
