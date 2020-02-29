@@ -186,15 +186,16 @@ namespace carcotrol {
     //% speed.min=0 speed.max=255
     export function CarCtrl(index: CarState, speed: number): void {
         if (cartype == carType.Unknown) init();
+        let wSpeed = Math.constrain(speed, -255, 255)
 
         switch (index) {
-            case CarState.Run: setPwmMotor(speed, speed); break;
-            case CarState.Back: setPwmMotor(-speed, -speed); break;
-            case CarState.Left: setPwmMotor(0, speed); break;
-            case CarState.Right: setPwmMotor(speed, 0); break;
+            case CarState.Run: setPwmMotor(wSpeed, wSpeed; break;
+            case CarState.Back: setPwmMotor(0 - wSpeed, 0 - wSpeed); break;
+            case CarState.Left: setPwmMotor(0, wSpeed); break;
+            case CarState.Right: setPwmMotor(wSpeed, 0); break;
             case CarState.Stop: setPwmMotor(0, 0); break;
-            case CarState.SpinLeft: setPwmMotor(-speed, speed); break;
-            case CarState.SpinRight: setPwmMotor(speed, -speed); break;
+            case CarState.SpinLeft: setPwmMotor(0 - wSpeed, wSpeed); break;
+            case CarState.SpinRight: setPwmMotor(wSpeed, 0 - wSpeed); break;
         }
     }
 
@@ -209,7 +210,10 @@ namespace carcotrol {
     export function CarCtrl2(speedL: number, speedR: number): void {
         if (cartype == carType.Unknown) init();
 
-        setPwmMotor(speedL, speedR)
+        let wSpeedL = Math.constrain(speedL, -255, 255)
+        let wSpeedR = Math.constrain(speedR, -255, 255)
+
+        setPwmMotor(wSpeedL, wSpeedR)
     }
 
     /**
