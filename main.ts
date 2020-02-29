@@ -189,7 +189,7 @@ namespace carcotrol {
         let wSpeed = Math.constrain(speed, -255, 255)
 
         switch (index) {
-            case CarState.Run: setPwmMotor(wSpeed, wSpeed; break;
+            case CarState.Run: setPwmMotor(wSpeed, wSpeed); break;
             case CarState.Back: setPwmMotor(0 - wSpeed, 0 - wSpeed); break;
             case CarState.Left: setPwmMotor(0, wSpeed); break;
             case CarState.Right: setPwmMotor(wSpeed, 0); break;
@@ -210,10 +210,10 @@ namespace carcotrol {
     export function CarCtrl2(speedL: number, speedR: number): void {
         if (cartype == carType.Unknown) init();
 
-        let wSpeedL = Math.constrain(speedL, -255, 255)
-        let wSpeedR = Math.constrain(speedR, -255, 255)
+        let wSpeedL = Math.constrain(speedL, -255, 255);
+        let wSpeedR = Math.constrain(speedR, -255, 255);
 
-        setPwmMotor(wSpeedL, wSpeedR)
+        setPwmMotor(wSpeedL, wSpeedR);
     }
 
     /**
