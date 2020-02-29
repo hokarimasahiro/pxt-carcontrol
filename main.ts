@@ -82,10 +82,9 @@ namespace carcotrol {
 
     function init() {
         if (cartype == carType.Unknown) {
-            pins.setPull(DigitalPin.P2, PinPullMode.PullUp)
-            if (pins.digitalReadPin(DigitalPin.P2) == 1) cartype = carType.Tinybit;
-            else cartype = carType.Maqueen
-            pins.setPull(DigitalPin.P2, PinPullMode.PullNone)
+            if (testi2c.testReadI2c(I2C_ADD_Tinybit)==0) cartype = carType.Tinybit;
+            if (testi2c.testReadI2c(I2C_ADD_Maqueen) == 0) cartype = carType.Maqueen;
+            else cartype = carType.Ecocar;
         }
     }
 

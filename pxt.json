@@ -3,7 +3,8 @@
     "version": "0.0.0",
     "description": "",
     "dependencies": {
-        "core": "*"
+        "core": "*",
+        "pxt-testi2c": "github:hokarimasahiro/pxt-testi2c#c26f7d92da9eadfd2b36e72baa2d011b779ff50a"
     },
     "files": [
         "README.md",
