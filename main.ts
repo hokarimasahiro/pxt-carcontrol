@@ -70,17 +70,25 @@ namespace carcotrol {
     function sendBuffer(buf: Buffer, pin: DigitalPin) {
     }
 
+    let initFlag = 0;
     let cartype = 0
     let stripPin = DigitalPin.P0
     let _length = 5
     let buf = pins.createBuffer(_length * 3);
     let brightness: number;
+    let distance = -1;
+    let oldDistance = -1;
 
     let I2C_ADD: number
     const I2C_ADD_Tinybit = 0x01
     const I2C_ADD_Maqueen = 0x10
 
     function init() {
+        if (initFlag == 0){
+            measureDistance();
+            initFlag=1;
+        } 
+
         if (cartype == carType.Unknown) {
             pins.setPull(DigitalPin.P2, PinPullMode.PullUp)
             if (pins.digitalReadPin(DigitalPin.P2) == 1) cartype = carType.Tinybit;
@@ -295,7 +303,34 @@ namespace carcotrol {
         }
         return -1;
     }
+    
+    function measureDistance() :void{
+        const usParCm = 43 //58    // 1000000[uS] / (340[m/S](sped of sound) * 100(cm)) * 2(round trip)
+        let pinT: number
+        let pinR: number
+        let list: Array<number> = [0, 0, 0, 0, 0];
 
+        while(true){
+            if (cartype != carType.Unknown) {
+                if (cartype == carType.Maqueen) {
+                    pinT = DigitalPin.P1
+                    pinR = DigitalPin.P2
+                } else if (cartype == carType.Tinybit) {
+                    pinT = DigitalPin.P16
+                    pinR = DigitalPin.P15
+                }
+                pins.setPull(pinT, PinPullMode.PullNone);
+                pins.digitalWritePin(pinT, 0);
+                control.waitMicros(2);
+                pins.digitalWritePin(pinT, 1);
+                control.waitMicros(10);
+                pins.digitalWritePin(pinT, 0);
+
+                distance = pins.pulseIn(pinR, PulseValue.High, 800 * usParCm);
+            }
+            basic.pause(50);
+        }
+    }
     /**
      * Get Distance.
      */
@@ -303,30 +338,7 @@ namespace carcotrol {
     //% weight=87 blockGap=10
     export function getDistance(): number {
         const usParCm = 43 //58    // 1000000[uS] / (340[m/S](sped of sound) * 100(cm)) * 2(round trip)
-        let pinT: number
-        let pinR: number
-        let list: Array<number> = [0, 0, 0, 0, 0];
-
-        if (cartype == carType.Unknown) init();
-
-        if (cartype == carType.Maqueen) {
-            pinT = DigitalPin.P1
-            pinR = DigitalPin.P2
-        } else if (cartype == carType.Tinybit) {
-            pinT = DigitalPin.P16
-            pinR = DigitalPin.P15
-        } else return -1;
-
-        pins.setPull(pinT, PinPullMode.PullNone);
-        pins.digitalWritePin(pinT, 0);
-        control.waitMicros(2);
-        pins.digitalWritePin(pinT, 1);
-        control.waitMicros(10);
-        pins.digitalWritePin(pinT, 0);
-
-        let d = pins.pulseIn(pinR, PulseValue.High, 800 * usParCm);
-
-        return d / usParCm;
+        return distance / usParCm;
     }
 
     /**
