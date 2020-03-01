@@ -84,10 +84,12 @@ namespace carcotrol {
     const I2C_ADD_Maqueen = 0x10
 
     function init() {
-        if (initFlag == 0){
-            measureDistance();
-            initFlag=1;
-        } 
+        if (initFlag == 0) {
+            control.inBackground(function () {
+                measureDistance()
+            })
+            initFlag = 1;
+        }
 
         if (cartype == carType.Unknown) {
             pins.setPull(DigitalPin.P2, PinPullMode.PullUp)
@@ -232,6 +234,7 @@ namespace carcotrol {
     //% weight=90 blockGap=10
     //% advanced=true
     export function setCarType(type: carType): void {
+        if (cartype == carType.Unknown) init();
         cartype = type
         if (cartype == carType.Roomba) {
             let buf = pins.createBuffer(1);
@@ -303,14 +306,14 @@ namespace carcotrol {
         }
         return -1;
     }
-    
-    function measureDistance() :void{
+
+    function measureDistance(): void {
         const usParCm = 43 //58    // 1000000[uS] / (340[m/S](sped of sound) * 100(cm)) * 2(round trip)
         let pinT: number
         let pinR: number
         let list: Array<number> = [0, 0, 0, 0, 0];
 
-        while(true){
+        while (true) {
             if (cartype != carType.Unknown) {
                 if (cartype == carType.Maqueen) {
                     pinT = DigitalPin.P1
@@ -337,7 +340,8 @@ namespace carcotrol {
     //% blockId="Get_distance" block="get distance(cm)"
     //% weight=87 blockGap=10
     export function getDistance(): number {
-        const usParCm = 43 //58    // 1000000[uS] / (340[m/S](sped of sound) * 100(cm)) * 2(round trip)
+        const usParCm = 43; //58    // (1[S] / 340[m/S](sped of sound)) * 10^6(uS/S) / 100(cm/m) * 2(round trip)
+        if (cartype == carType.Unknown) init();
         return distance / usParCm;
     }
 
