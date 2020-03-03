@@ -4,7 +4,7 @@
     "description": "",
     "dependencies": {
         "core": "*",
-        "pxt-testi2c": "github:hokarimasahiro/pxt-testi2c#c26f7d92da9eadfd2b36e72baa2d011b779ff50a"
+        "pxt-testi2c": "github:hokarimasahiro/pxt-testi2c#d059cdc2bc7f3e0d1ead30e66545261d3eee9385"
     },
     "files": [
         "README.md",
