@@ -9,8 +9,12 @@ enum carType {
     Maqueen = 2,
     //% block=Roomba
     Roomba = 3,
-    //% block=Ecocar
-    Ecocar = 4,
+    //% block=Ecocar0
+    Ecocar0 = 4,
+    //% block=Ecocar1
+    Ecocar1 = 5,
+    //% block=EcocarA
+    EcocarA = 6,
     //% block=unknown
     Unknown = 0
 }
@@ -82,6 +86,7 @@ namespace carcotrol {
     let I2C_ADD: number
     const I2C_ADD_Tinybit = 0x01
     const I2C_ADD_Maqueen = 0x10
+    const I2C_ADD_Ecocar = 0x20
 
     function init() {
         if (initFlag == 0) {
@@ -92,12 +97,12 @@ namespace carcotrol {
         }
 
         if (cartype == carType.Unknown) {
-//            pins.setPull(DigitalPin.P2, PinPullMode.PullUp)
-//            if (pins.digitalReadPin(DigitalPin.P2) == 1) cartype = carType.Tinybit;
-            if (testi2c.testWriteI2c(1)==0) cartype = carType.Tinybit;
+            //            pins.setPull(DigitalPin.P2, PinPullMode.PullUp)
+            //            if (pins.digitalReadPin(DigitalPin.P2) == 1) cartype = carType.Tinybit;
+            if (testi2c.testWriteI2c(1) == 0) cartype = carType.Tinybit;
             else if (testi2c.testWriteI2c(16) == 0) cartype = carType.Maqueen;
             else cartype = carType.Unknown
-//            pins.setPull(DigitalPin.P2, PinPullMode.PullNone)
+            //            pins.setPull(DigitalPin.P2, PinPullMode.PullNone)
         }
     }
 
@@ -171,7 +176,7 @@ namespace carcotrol {
                 buf[4] = speedR;
             }
             serial.writeBuffer(buf);
-        } else if (cartype == carType.Ecocar) {
+        } else if (cartype == carType.Ecocar0) {
             if (speedL >= 0) {
                 pins.digitalWritePin(DigitalPin.P12, 0)
                 pins.analogWritePin(AnalogPin.P8, speedL * 4);
@@ -186,6 +191,39 @@ namespace carcotrol {
                 pins.digitalWritePin(DigitalPin.P14, 0)
                 pins.analogWritePin(AnalogPin.P16, (0 - speedR) * 4);
             }
+        } else if (cartype == carType.Ecocar1) {
+            if (speedL >= 0) {
+                pins.digitalWritePin(DigitalPin.P12, 0)
+                pins.analogWritePin(AnalogPin.P8, speedL * 4);
+            } else {
+                pins.digitalWritePin(DigitalPin.P8, 0)
+                pins.analogWritePin(AnalogPin.P12, (0 - speedL) * 4);
+            }
+            if (speedR >= 0) {
+                pins.digitalWritePin(DigitalPin.P16, 0)
+                pins.analogWritePin(AnalogPin.P14, speedR * 4);
+            } else {
+                pins.digitalWritePin(DigitalPin.P14, 0)
+                pins.analogWritePin(AnalogPin.P16, (0 - speedR) * 4);
+            }
+        } else if (cartype == carType.EcocarA) {
+            let buf = pins.createBuffer(5);
+            buf[0] = 0;
+            if (speedL >= 0) {
+                buf[1] = 0;
+                buf[2] = speedL;
+            } else {
+                buf[1] = 255;
+                buf[2] = speedL;
+            }
+            if (speedR >= 0) {
+                buf[3] = 0;
+                buf[4] = speedR;
+            } else {
+                buf[3] = 255;
+                buf[4] = speedR;
+            }
+            pins.i2cWriteBuffer(I2C_ADD_Ecocar,buf);
         }
     }
 
@@ -286,7 +324,17 @@ namespace carcotrol {
                 return 1 - pins.digitalReadPin(DigitalPin.P13);
             else if (direct == Position.Right)
                 return 1 - pins.digitalReadPin(DigitalPin.P14);
-        } else if (cartype == carType.Ecocar) {
+        } else if (cartype == carType.Ecocar0) {
+            if (direct == Position.Left)
+                return pins.analogReadPin(AnalogPin.P1) < 800 ? 1 : 0;
+            else if (direct == Position.Right)
+                return pins.analogReadPin(AnalogPin.P2) < 800 ? 1 : 0;
+        } else if (cartype == carType.Ecocar1) {
+            if (direct == Position.Left)
+                return pins.analogReadPin(AnalogPin.P1) < 800 ? 1 : 0;
+            else if (direct == Position.Right)
+                return pins.analogReadPin(AnalogPin.P2) < 800 ? 1 : 0;
+        } else if (cartype == carType.EcocarA) {
             if (direct == Position.Left)
                 return pins.analogReadPin(AnalogPin.P1) < 800 ? 1 : 0;
             else if (direct == Position.Right)
@@ -314,6 +362,7 @@ namespace carcotrol {
         let pinT: number
         let pinR: number
         let list: Array<number> = [0, 0, 0, 0, 0];
+        let listIndex=0;
 
         while (true) {
             if (cartype != carType.Unknown) {
@@ -323,6 +372,15 @@ namespace carcotrol {
                 } else if (cartype == carType.Tinybit) {
                     pinT = DigitalPin.P16
                     pinR = DigitalPin.P15
+                } else if (cartype == carType.Ecocar1) {
+                    pinT = DigitalPin.P1
+                    pinR = DigitalPin.P2
+                } else if (cartype == carType.EcocarA) {
+                    pinT = DigitalPin.P1
+                    pinR = DigitalPin.P2
+                } else if (cartype == carType.Roomba) {
+                    pinT = DigitalPin.P8
+                    pinR = DigitalPin.P12
                 }
                 pins.setPull(pinT, PinPullMode.PullNone);
                 pins.digitalWritePin(pinT, 0);
@@ -331,7 +389,12 @@ namespace carcotrol {
                 control.waitMicros(10);
                 pins.digitalWritePin(pinT, 0);
 
-                distance = pins.pulseIn(pinR, PulseValue.High, 800 * usParCm);
+                list[listIndex] = pins.pulseIn(pinR, PulseValue.High, 800 * usParCm);
+                listIndex++;
+                if(listIndex >= list.length) listIndex=0;
+
+                list.sort();
+                distance=(list[1]+list[2]+list[3])/3
             }
             basic.pause(50);
         }
@@ -402,9 +465,12 @@ namespace carcotrol {
         let Pin: DigitalPin
 
         if (cartype == carType.Unknown) return;
+        if (cartype == carType.Roomba) return;
         if (cartype == carType.Tinybit) Pin = DigitalPin.P12;
         if (cartype == carType.Maqueen) Pin = DigitalPin.P15;
-        if (cartype == carType.Ecocar) Pin = DigitalPin.P0;
+        if (cartype == carType.Ecocar0) Pin = DigitalPin.P0;
+        if (cartype == carType.Ecocar1) Pin = DigitalPin.P0;
+        if (cartype == carType.EcocarA) Pin = DigitalPin.P0;
 
         sendBuffer(buf, Pin);
     }
