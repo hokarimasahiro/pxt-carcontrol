@@ -97,12 +97,9 @@ namespace carcotrol {
         }
 
         if (cartype == carType.Unknown) {
-            //            pins.setPull(DigitalPin.P2, PinPullMode.PullUp)
-            //            if (pins.digitalReadPin(DigitalPin.P2) == 1) cartype = carType.Tinybit;
-            if (testi2c.testWriteI2c(1) == 0) cartype = carType.Tinybit;
-//            else if (testi2c.testWriteI2c(16) == 0) cartype = carType.Maqueen;
+            if (testi2c.testReadI2c(1) == 0) cartype = carType.Tinybit;
+//            else if (testi2c.testReadI2c(16) == 0) cartype = carType.Maqueen;
             else cartype = carType.Maqueen
-            //            pins.setPull(DigitalPin.P2, PinPullMode.PullNone)
         }
     }
 
