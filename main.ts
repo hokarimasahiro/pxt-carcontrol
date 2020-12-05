@@ -80,7 +80,7 @@ namespace carcotrol {
     const I2C_ADD_Tinybit = 0x01
     const I2C_ADD_Maqueen = 0x10
 
-    function init() {
+    function initCar() {
         if (cartype == carType.Unknown) {
             pins.setPull(DigitalPin.P2, PinPullMode.PullUp)
             if (pins.digitalReadPin(DigitalPin.P2) == 1) cartype = carType.Tinybit;
@@ -185,7 +185,7 @@ namespace carcotrol {
     //% weight=92 blockGap=10
     //% speed.min=0 speed.max=255
     export function CarCtrl(index: CarState, speed: number): void {
-        if (cartype == carType.Unknown) init();
+        if (cartype == carType.Unknown) initCar();
 
         switch (index) {
             case CarState.Run: setPwmMotor(speed, speed); break;
@@ -207,7 +207,7 @@ namespace carcotrol {
     //% weight=91 blockGap=10
     //% speedL.min=-255 speedL.max=255 speedR.min=-255 speedR.max=255
     export function CarCtrl2(speedL: number, speedR: number): void {
-        if (cartype == carType.Unknown) init();
+        if (cartype == carType.Unknown) initCar();
 
         setPwmMotor(speedL, speedR)
     }
@@ -235,7 +235,7 @@ namespace carcotrol {
     //% weight=90 blockGap=10
     //% advanced=true
     export function getCarType(): carType {
-        if (cartype == carType.Unknown) init();
+        if (cartype == carType.Unknown) initCar();
         return cartype
     }
 
@@ -255,7 +255,7 @@ namespace carcotrol {
     //% blockId="Line_Sensor" block="Line_Sensor|direct %direct"
     //% weight=89 blockGap=10
     export function Line_Sensor(direct: Position): number {
-        if (cartype == carType.Unknown) init();
+        if (cartype == carType.Unknown) initCar();
 
         if (cartype == carType.Maqueen) {
             if (direct == Position.Left) {
@@ -284,7 +284,7 @@ namespace carcotrol {
     //% blockId="Voice_Sensor" block="Voice Sensor"
     //% weight=88 blockGap=10
     export function Voice_Sensor(): number {
-        if (cartype == carType.Unknown) init();
+        if (cartype == carType.Unknown) initCar();
 
         if (cartype == carType.Tinybit) {
             return pins.analogReadPin(AnalogPin.P1);
@@ -303,7 +303,7 @@ namespace carcotrol {
         let pinR: number
         let list: Array<number> = [0, 0, 0, 0, 0];
 
-        if (cartype == carType.Unknown) init();
+        if (cartype == carType.Unknown) initCar();
 
         if (cartype == carType.Maqueen) {
             pinT = DigitalPin.P1
@@ -332,7 +332,7 @@ namespace carcotrol {
     //% blockId="set_LED" block="set LED color|led %pos|color %color=carcontrol_colors"
     //% weight=86 blockGap=10
     export function setLED(pos: Position, color: number): void {
-        if (cartype == carType.Unknown) init();
+        if (cartype == carType.Unknown) initCar();
 
         if (cartype == carType.Maqueen) {
             if (pos == Position.Left || pos == Position.Both) {
@@ -406,7 +406,7 @@ namespace carcotrol {
     //% weight=77 blockGap=8
     //% bright.min=0 bright.max=255
     export function setNeoBrightness(bright: number): void {
-        if (cartype == carType.Unknown) init();
+        if (cartype == carType.Unknown) initCar();
 
         brightness = bright
     }
