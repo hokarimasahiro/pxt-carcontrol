@@ -9,12 +9,8 @@ enum carType {
     Maqueen = 2,
     //% block=Roomba
     Roomba = 3,
-    //% block=Ecocar0
-    Ecocar0 = 4,
-    //% block=Ecocar1
-    Ecocar1 = 5,
-    //% block=EcocarA
-    EcocarA = 6,
+    //% block=Ecocar
+    Ecocar = 4,
     //% block=unknown
     Unknown = 0
 }
@@ -95,12 +91,6 @@ namespace carcotrol {
             })
             initFlag = 1;
         }
-
-        if (cartype == carType.Unknown) {
-            if (testi2c.testReadI2c(1) == 0) cartype = carType.Tinybit;
-//            else if (testi2c.testReadI2c(16) == 0) cartype = carType.Maqueen;
-            else cartype = carType.Maqueen
-        }
     }
 
     function setPwmRGB(red: number, green: number, blue: number): void {
@@ -173,7 +163,7 @@ namespace carcotrol {
                 buf[4] = speedR;
             }
             serial.writeBuffer(buf);
-        } else if (cartype == carType.Ecocar0) {
+        } else if (cartype == carType.Ecocar) {
             if (speedL >= 0) {
                 pins.digitalWritePin(DigitalPin.P12, 0)
                 pins.analogWritePin(AnalogPin.P8, speedL * 4);
@@ -188,39 +178,6 @@ namespace carcotrol {
                 pins.digitalWritePin(DigitalPin.P14, 0)
                 pins.analogWritePin(AnalogPin.P16, (0 - speedR) * 4);
             }
-        } else if (cartype == carType.Ecocar1) {
-            if (speedL >= 0) {
-                pins.digitalWritePin(DigitalPin.P12, 0)
-                pins.analogWritePin(AnalogPin.P8, speedL * 4);
-            } else {
-                pins.digitalWritePin(DigitalPin.P8, 0)
-                pins.analogWritePin(AnalogPin.P12, (0 - speedL) * 4);
-            }
-            if (speedR >= 0) {
-                pins.digitalWritePin(DigitalPin.P16, 0)
-                pins.analogWritePin(AnalogPin.P14, speedR * 4);
-            } else {
-                pins.digitalWritePin(DigitalPin.P14, 0)
-                pins.analogWritePin(AnalogPin.P16, (0 - speedR) * 4);
-            }
-        } else if (cartype == carType.EcocarA) {
-            let buf = pins.createBuffer(5);
-            buf[0] = 0;
-            if (speedL >= 0) {
-                buf[1] = 0;
-                buf[2] = speedL;
-            } else {
-                buf[1] = 255;
-                buf[2] = speedL;
-            }
-            if (speedR >= 0) {
-                buf[3] = 0;
-                buf[4] = speedR;
-            } else {
-                buf[3] = 255;
-                buf[4] = speedR;
-            }
-            pins.i2cWriteBuffer(I2C_ADD_Ecocar,buf);
         }
     }
 
@@ -229,7 +186,6 @@ namespace carcotrol {
      * @param speed Car speed in 0-255. eg:50
      */
     //% blockId="CarCtrl" block="CarCtrl|%index|speed %speed"
-    //% weight=92 blockGap=10
     //% speed.min=0 speed.max=255
     export function CarCtrl(index: CarState, speed: number): void {
         if (cartype == carType.Unknown) init();
@@ -252,7 +208,6 @@ namespace carcotrol {
      * @param speedR Right Motor Power in 0-255. eg:50
      */
     //% blockId="CarCtrl2" block="CarCtrl| speedL %speedL| speedR %speedR"
-    //% weight=91 blockGap=10
     //% speedL.min=-255 speedL.max=255 speedR.min=-255 speedR.max=255
     export function CarCtrl2(speedL: number, speedR: number): void {
         if (cartype == carType.Unknown) init();
@@ -268,16 +223,10 @@ namespace carcotrol {
      * @param carType carType in carType. eg:carType.Maqueen
      */
     //% blockId="set_car_type" block="set car type|%carType"
-    //% weight=90 blockGap=10
     //% advanced=true
     export function setCarType(type: carType): void {
-        if (cartype == carType.Unknown) init();
+        init();
         cartype = type
-        if (cartype == carType.Roomba) {
-            let buf = pins.createBuffer(1);
-            buf[0] = 131;
-            serial.writeBuffer(buf)
-        }
     }
 
     /**
@@ -295,7 +244,6 @@ namespace carcotrol {
      * car type.
      */
     //% blockId="car" block="%car_type"
-    //% weight=90 blockGap=10
     //% advanced=true
     export function car(car_type: carType): number {
         return car_type;
@@ -305,7 +253,6 @@ namespace carcotrol {
      * Sense a line color.
      */
     //% blockId="Line_Sensor" block="Line_Sensor|direct %direct"
-    //% weight=89 blockGap=10
     export function Line_Sensor(direct: Position): number {
         if (cartype == carType.Unknown) init();
 
@@ -315,23 +262,12 @@ namespace carcotrol {
             } else if (direct == Position.Right) {
                 return pins.digitalReadPin(DigitalPin.P14)
             }
-
         } else if (cartype == carType.Tinybit) {
             if (direct == Position.Left)
                 return 1 - pins.digitalReadPin(DigitalPin.P13);
             else if (direct == Position.Right)
                 return 1 - pins.digitalReadPin(DigitalPin.P14);
-        } else if (cartype == carType.Ecocar0) {
-            if (direct == Position.Left)
-                return pins.analogReadPin(AnalogPin.P1) < 800 ? 1 : 0;
-            else if (direct == Position.Right)
-                return pins.analogReadPin(AnalogPin.P2) < 800 ? 1 : 0;
-        } else if (cartype == carType.Ecocar1) {
-            if (direct == Position.Left)
-                return pins.analogReadPin(AnalogPin.P1) < 800 ? 1 : 0;
-            else if (direct == Position.Right)
-                return pins.analogReadPin(AnalogPin.P2) < 800 ? 1 : 0;
-        } else if (cartype == carType.EcocarA) {
+        } else if (cartype == carType.Ecocar) {
             if (direct == Position.Left)
                 return pins.analogReadPin(AnalogPin.P1) < 800 ? 1 : 0;
             else if (direct == Position.Right)
@@ -344,7 +280,6 @@ namespace carcotrol {
      * Get Voice Level.
      */
     //% blockId="Voice_Sensor" block="Voice Sensor"
-    //% weight=88 blockGap=10
     export function Voice_Sensor(): number {
         if (cartype == carType.Unknown) init();
 
@@ -369,15 +304,9 @@ namespace carcotrol {
                 } else if (cartype == carType.Tinybit) {
                     pinT = DigitalPin.P16
                     pinR = DigitalPin.P15
-                } else if (cartype == carType.Ecocar1) {
+                } else if (cartype == carType.Ecocar) {
                     pinT = DigitalPin.P1
                     pinR = DigitalPin.P2
-                } else if (cartype == carType.EcocarA) {
-                    pinT = DigitalPin.P1
-                    pinR = DigitalPin.P2
-                } else if (cartype == carType.Roomba) {
-                    pinT = DigitalPin.P8
-                    pinR = DigitalPin.P12
                 }
                 pins.setPull(pinT, PinPullMode.PullNone);
                 pins.digitalWritePin(pinT, 0);
@@ -400,7 +329,6 @@ namespace carcotrol {
      * Get Distance.
      */
     //% blockId="Get_distance" block="get distance(cm)"
-    //% weight=87 blockGap=10
     export function getDistance(): number {
         const usParCm = 43; //58    // (1[S] / 340[m/S](sped of sound)) * 10^6(uS/S) / 100(cm/m) * 2(round trip)
         if (cartype == carType.Unknown) init();
@@ -412,7 +340,6 @@ namespace carcotrol {
     */
 
     //% blockId="set_LED" block="set LED color|led %pos|color %color=carcontrol_colors"
-    //% weight=86 blockGap=10
     export function setLED(pos: Position, color: number): void {
         if (cartype == carType.Unknown) init();
 
@@ -432,7 +359,6 @@ namespace carcotrol {
      * @param rgb RGB color of the LED
      */
     //% blockId="set_set_color" block="set neo color %rgb=carcontrol_colors" 
-    //% weight=85 blockGap=8
     export function setNeoColor(rgb: number) {
         rgb = rgb >> 0;
         setAllRGB(rgb);
@@ -446,7 +372,6 @@ namespace carcotrol {
      * @param rgb RGB color of the LED
      */
     //% blockId="et_neo_pixel_color" block="set neo pixel color at %pixeloffset|to %rgb=carcontrol_colors" 
-    //% weight=83 blockGap=8
     export function setNeoPixelColor(pixeloffset: number, rgb: number): void {
         setPixelRGB(pixeloffset >> 0, rgb >> 0);
         show();
@@ -456,18 +381,14 @@ namespace carcotrol {
      * Send all the changes to the strip.
      */
     //% blockId="neopixel_show" block="%strip|show"
-    //% weight=81 blockGap=8
     //% advanced=true
     export function show() {
         let Pin: DigitalPin
 
         if (cartype == carType.Unknown) return;
-        if (cartype == carType.Roomba) return;
         if (cartype == carType.Tinybit) Pin = DigitalPin.P12;
         if (cartype == carType.Maqueen) Pin = DigitalPin.P15;
-        if (cartype == carType.Ecocar0) Pin = DigitalPin.P0;
-        if (cartype == carType.Ecocar1) Pin = DigitalPin.P0;
-        if (cartype == carType.EcocarA) Pin = DigitalPin.P0;
+        if (cartype == carType.Ecocar) Pin = DigitalPin.P0;
 
         sendBuffer(buf, Pin);
     }
@@ -477,7 +398,6 @@ namespace carcotrol {
      * You need to call ``show`` to make the changes visible.
      */
     //% blockId="neopixel_clear" block="%strip|clear"
-    //% weight=79 blockGap=8
     //% advanced=true
     export function clear(): void {
         buf.fill(0, 0, _length * 3);
@@ -488,7 +408,6 @@ namespace carcotrol {
      * @param bright in 0-255. eg:50
      */
     //% blockId="set_Neo_Brightness" block="set Neo Brightness %bright"
-    //% weight=77 blockGap=8
     //% bright.min=0 bright.max=255
     export function setNeoBrightness(bright: number): void {
         if (cartype == carType.Unknown) init();
@@ -541,7 +460,6 @@ namespace carcotrol {
      * @param green value of the green channel between 0 and 255. eg: 255
      * @param blue value of the blue channel between 0 and 255. eg: 255
      */
-    //% weight=1
     //% blockId="neopixel_rgb" block="red %red|green %green|blue %blue"
     //% red.min=0 red.max=255 green.min=0 green.max=255 blue.min=0 blue.max=255
     export function rgb(red: number, green: number, blue: number): number {
@@ -553,7 +471,6 @@ namespace carcotrol {
      * @param rgb eg: 0x00ffc0
      */
     //% blockId="neopixel_change_red_and_green" block="change red and green in %rgb"
-    //% weight=75 blockGap=8
     //% advanced=true
     export function changeRandG(rgb: number): number {
         return packRGB(unpackG(rgb), unpackR(rgb), unpackB(rgb));
@@ -562,7 +479,6 @@ namespace carcotrol {
     /**
      * Gets the RGB value of a known color
     */
-    //% weight=2 blockGap=8
     //% blockId="carcontrol_colors" block="%color"
     export function colors(color: RGBColors): number {
         return color;

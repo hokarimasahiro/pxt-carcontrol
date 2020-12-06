@@ -4,7 +4,7 @@
     "description": "",
     "dependencies": {
         "core": "*",
-        "pxt-testi2c": "github:hokarimasahiro/pxt-testi2c#a3c516b53137e7d47615b5756f3d6d171af0bc1c"
+        "microphone": "*"
     },
     "files": [
         "README.md",
@@ -15,6 +15,8 @@
         "test.ts"
     ],
     "public": false,
-    "preferredEditor": "tsprj",
-    "installedVersion": "workspace:9ace492e-9519-4dde-138b-ede893c3ecd6"
+    "supportedTargets": [
+        "microbit"
+    ],
+    "preferredEditor": "tsprj"
 }
