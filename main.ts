@@ -7,8 +7,6 @@ enum carType {
     Tinybit = 1,
     //% block=Maqueen
     Maqueen = 2,
-    //% block=Roomba
-    Roomba = 3,
     //% block=Ecocar
     Ecocar = 4,
     //% block=unknown
@@ -145,24 +143,6 @@ namespace carcotrol {
                 buf[2] = 0 - speedR;
             }
             pins.i2cWriteBuffer(I2C_ADD_Maqueen, buf);
-        } else if (cartype == carType.Roomba) {
-            let buf = pins.createBuffer(5);
-            buf[0] = 146;
-            if (speedL >= 0) {
-                buf[1] = 0;
-                buf[2] = speedL;
-            } else {
-                buf[1] = 255;
-                buf[2] = speedL;
-            }
-            if (speedR >= 0) {
-                buf[3] = 0;
-                buf[4] = speedR;
-            } else {
-                buf[3] = 255;
-                buf[4] = speedR;
-            }
-            serial.writeBuffer(buf);
         } else if (cartype == carType.Ecocar) {
             if (speedL >= 0) {
                 pins.digitalWritePin(DigitalPin.P12, 0)
