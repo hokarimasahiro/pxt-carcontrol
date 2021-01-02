@@ -234,42 +234,6 @@ namespace carcotrol {
         return -1;
     }
 
-    function measureDistance(): void {
-        const usParCm = 43 //58    // 1000000[uS] / (340[m/S](sped of sound) * 100(cm)) * 2(round trip)
-        let pinT: number
-        let pinR: number
-        let list: Array<number> = [0, 0, 0, 0, 0];
-        let listIndex=0;
-
-        while (true) {
-            if (cartype != carType.Unknown) {
-                if (cartype == carType.Maqueen) {
-                    pinT = DigitalPin.P1
-                    pinR = DigitalPin.P2
-                } else if (cartype == carType.Tinybit) {
-                    pinT = DigitalPin.P16
-                    pinR = DigitalPin.P15
-                } else if (cartype == carType.Porocar) {
-                    pinT = DigitalPin.P1
-                    pinR = DigitalPin.P2
-                }
-                pins.setPull(pinT, PinPullMode.PullNone);
-                pins.digitalWritePin(pinT, 0);
-                control.waitMicros(2);
-                pins.digitalWritePin(pinT, 1);
-                control.waitMicros(10);
-                pins.digitalWritePin(pinT, 0);
-
-                list[listIndex] = pins.pulseIn(pinR, PulseValue.High, 800 * usParCm);
-                listIndex++;
-                if(listIndex >= list.length) listIndex=0;
-
-                list.sort();
-                distance=(list[1]+list[2]+list[3])/3
-            }
-            basic.pause(50);
-        }
-    }
     /**
      * Get Distance.
      */
@@ -374,11 +338,11 @@ namespace carcotrol {
      */
     //% blockId="set_set_color" block="set neo color %rgb=carcontrol_colors" 
     export function setNeoColor(rgb: number) {
-        rgb = rgb >> 0;
+        if (cartype==carType.Porocar) rgb = changeRandG(rgb >> 0)
+        else rgb = rgb >> 0;
         setAllRGB(rgb);
         show();
     }
-
     /**
      * Set LED to a given color (range 0-255 for r, g, b). 
      * You need to call ``show`` to make the changes visible.
@@ -387,7 +351,9 @@ namespace carcotrol {
      */
     //% blockId="et_neo_pixel_color" block="set neo pixel color at %pixeloffset|to %rgb=carcontrol_colors" 
     export function setNeoPixelColor(pixeloffset: number, rgb: number): void {
-        setPixelRGB(pixeloffset >> 0, rgb >> 0);
+        if (cartype==carType.Porocar) rgb = changeRandG(rgb >> 0)
+        else rgb = rgb >> 0;
+        setPixelRGB(pixeloffset >> 0, rgb);
         show();
     }
 
