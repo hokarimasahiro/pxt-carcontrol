@@ -335,6 +335,51 @@ namespace carcotrol {
         }
     }
     /**
+     * show barGraph.
+     * @param l Left level in -255 to 255. eg:50
+     * @param r Right level in -255 to 255. eg:50
+     */
+    //% blockId="plotBarGraph" block="plotBarGraph|%l|%r"
+    //% l.min=-255 l.max=255 r.min=-255 r.max=255
+    export function plotBarGraph(l: number, r: number): void {
+        if (cartype == carType.Unknown) init();
+
+        let wl = Math.constrain(Math.trunc(l / 25), -9, 9);
+        let wr = Math.constrain(Math.trunc(r / 25), -9, 9);
+
+        for(let y=0;y<5;y++){
+            for(let x=0;x<2;x++){
+                if(wl>=0){
+                    if (wl > (y * 2 + x)){
+                        led.plot(1 - x,4 - y)
+                    } else {
+                        led.unplot(1 - x,4 - y)
+                    }
+                }else{
+                    if ((0 - wl)>(4 - y) *2 + x){
+                        led.plot(1 - x,4 - y);
+                    }else {
+                        led.unplot(1 - x,4 - y);
+                    }
+                }
+                if(wr>=0){
+                    if (wr > (y * 2 + x)){
+                        led.plot(3 + x,4 - y)
+                    } else {
+                        led.unplot(3 + x,4 - y)
+                    }
+                }else{
+                    if ((0 - wr)>(4 - y) *2 + x){
+                        led.plot(3 + x,4 - y);
+                    }else {
+                        led.unplot(3 + x,4 - y);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
      * Shows all LEDs to a given color (range 0-255 for r, g, b). 
      * @param rgb RGB color of the LED
      */

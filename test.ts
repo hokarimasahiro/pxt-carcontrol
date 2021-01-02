@@ -1,10 +1,14 @@
 // tests go here; this will not be compiled when this package is used as a library
-carcotrol.setCarType(carType.Maqueen)
+carcotrol.setCarType(carType.Ecocar)
 basic.forever(function () {
-    if (input.buttonIsPressed(Button.A)) {
-        carcotrol.CarCtrl(CarState.Run, 255)
-    } else {
-        carcotrol.CarCtrl(CarState.Stop, 0)
+    for(let i=0;i<=255;i++){
+        carcotrol.plotBarGraph(i, i)
+        basic.pause(10)
     }
-    basic.pause(100)
+    basic.pause(1000)
+    for(let i=0;i>=-255;i--){
+        carcotrol.plotBarGraph(i, i)
+        basic.pause(10)
+    }
+    basic.pause(1000)
 })
