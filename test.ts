@@ -1,5 +1,5 @@
 // tests go here; this will not be compiled when this package is used as a library
-carcotrol.setCarType(carType.Ecocar)
+carcotrol.setCarType(carType.Porocar)
 basic.forever(function () {
     for(let i=0;i<=255;i++){
         carcotrol.plotBarGraph(i, i)

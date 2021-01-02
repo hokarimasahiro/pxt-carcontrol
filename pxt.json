@@ -8,8 +8,8 @@
     },
     "files": [
         "README.md",
-        "main.ts",
-        "sendBuffer.asm"
+        "sendBuffer.asm",
+        "carControl.ts"
     ],
     "testFiles": [
         "test.ts"
