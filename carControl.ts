@@ -222,9 +222,9 @@ namespace carcotrol {
                 return pins.digitalReadPin(DigitalPin.P14) != color;
         } else if (cartype == carType.Porocar) {
             if (direct == Position.Left)
-                return pins.analogReadPin(AnalogPin.P1) < 800;
+                return (pins.analogReadPin(AnalogPin.P1) < 800 ? 1:0) == color;
             else if (direct == Position.Right)
-                return pins.analogReadPin(AnalogPin.P2) < 800;
+                return (pins.analogReadPin(AnalogPin.P2) < 800 ? 1:0) == color;
         }
         return false;
     }
