@@ -207,15 +207,15 @@ namespace carcotrol {
 
         if (cartype == carType.Maqueen) {
             if (direct == Position.Left) {
-                return pins.digitalReadPin(DigitalPin.P13) != color;
+                return pins.digitalReadPin(DigitalPin.P13) == color;
             } else if (direct == Position.Right) {
-                return pins.digitalReadPin(DigitalPin.P14) != color;
+                return pins.digitalReadPin(DigitalPin.P14) == color;
             }
         } else if (cartype == carType.Tinybit) {
             if (direct == Position.Left)
-                return pins.digitalReadPin(DigitalPin.P13) == color;
+                return pins.digitalReadPin(DigitalPin.P13) != color;
             else if (direct == Position.Right)
-                return pins.digitalReadPin(DigitalPin.P14) == color;
+                return pins.digitalReadPin(DigitalPin.P14) != color;
         } else if (cartype == carType.Porocar) {
             if (direct == Position.Left)
                 return pins.analogReadPin(AnalogPin.P1) < 800;
