@@ -318,7 +318,7 @@ namespace carcotrol {
             if (pos == Position.Right || pos == Position.Both) {
                 pins.digitalWritePin(DigitalPin.P12, color == RGBColors.Black ? 0 : 1)
             }
-        }
+        } else if(cartype == carType.Tinybit) setPwmRGB(unpackR(color),unpackG(color),unpackB(color));
     }
     /**
      * show barGraph.
