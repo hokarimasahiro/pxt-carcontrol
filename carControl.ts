@@ -233,7 +233,7 @@ namespace carcotrol {
     /**
      * Sense a line color for number
      */
-    //% blockId="get_line_color" block="lineColor|direct %direct"
+    //% blockId="get_line_color_N" block="lineColorN|direct %direct"
     export function getLineColorN(direct: Position): number {
         if (cartype == carType.Unknown) init();
 
