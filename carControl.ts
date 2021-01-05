@@ -229,6 +229,33 @@ namespace carcotrol {
         return false;
     }
 
+
+    /**
+     * Sense a line color for number
+     */
+    //% blockId="get_line_color" block="lineColor|direct %direct"
+    export function getLineColorN(direct: Position): number {
+        if (cartype == carType.Unknown) init();
+
+        if (cartype == carType.Maqueen) {
+            if (direct == Position.Left) {
+                return pins.digitalReadPin(DigitalPin.P13);
+            } else if (direct == Position.Right) {
+                return pins.digitalReadPin(DigitalPin.P14);
+            }
+        } else if (cartype == carType.Tinybit) {
+            if (direct == Position.Left)
+                return 1 - pins.digitalReadPin(DigitalPin.P13);
+            else if (direct == Position.Right)
+                return 1 - pins.digitalReadPin(DigitalPin.P14);
+        } else if (cartype == carType.Porocar) {
+            if (direct == Position.Left)
+                return (pins.analogReadPin(AnalogPin.P1) < 800 ? 1:0);
+            else if (direct == Position.Right)
+                return (pins.analogReadPin(AnalogPin.P2) < 800 ? 1:0);
+        }
+        return -1;
+    }
     /**
      * Get Voice Level.
      */
