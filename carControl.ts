@@ -371,8 +371,7 @@ namespace carcotrol {
      */
     //% blockId="set_set_color" block="set neo color %rgb=carcontrol_colors" 
     export function setNeoColor(rgb: number) {
-        if (cartype==carType.Porocar) rgb = changeRandG(rgb >> 0)
-        else rgb = rgb >> 0;
+        rgb = rgb >> 0;
         setAllRGB(rgb);
         show();
     }
@@ -384,8 +383,7 @@ namespace carcotrol {
      */
     //% blockId="et_neo_pixel_color" block="set neo pixel color at %pixeloffset|to %rgb=carcontrol_colors" 
     export function setNeoPixelColor(pixeloffset: number, rgb: number): void {
-        if (cartype==carType.Porocar) rgb = changeRandG(rgb >> 0)
-        else rgb = rgb >> 0;
+        rgb = rgb >> 0;
         setPixelRGB(pixeloffset >> 0, rgb);
         show();
     }
