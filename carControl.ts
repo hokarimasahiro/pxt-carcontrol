@@ -288,8 +288,8 @@ namespace carcotrol {
             pinT = DigitalPin.P16
             pinR = DigitalPin.P15
         } else if (cartype == carType.Porocar) {
-            pinT = DigitalPin.P1
-            pinR = DigitalPin.P2
+            pinT = DigitalPin.P2
+            pinR = DigitalPin.P1
         }
         pins.setPull(pinT, PinPullMode.PullNone);
         pins.digitalWritePin(pinT, 0);
