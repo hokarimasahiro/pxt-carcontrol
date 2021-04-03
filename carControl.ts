@@ -9,8 +9,6 @@ enum carType {
     Maqueen = 2,
     //% block=Porocar
     Porocar = 4,
-    //% block=custom
-    custom = 5,
     //% block=unknown
     Unknown = 0
 }
@@ -68,30 +66,12 @@ namespace carcotrol {
     let brightness: number;
     let distance = -1;
     let oldDistance = -1;
-    let neoPin=DigitalPin.P0            // default pin at porocar
-    let lineLeft=AnalogPin.P1           // default pin at porocar
-    let lineRight=AnalogPin.P2          // default pin at porocar
-    let leftMotorPlus=AnalogPin.P8      // defaulr pin at porocar
-    let leftMotorMinus=AnalogPin.P12    // default pin at porocar
-    let rightMotorPlus=AnalogPin.P14    // default pin at porocar
-    let rightMotorMinus=AnalogPin.P16   // defaule pin at porocar
-    let distanceTrigger=DigitalPin.P1   // default pin at porocar
-    let distanceEcho=DigitalPin.P2      // default pin at porocar
-    let thresholdLeft=800               // default pin at porocar
-    let thresholdRight=800              // default pin at porocar
 
     let I2C_ADD: number
     const I2C_ADD_Tinybit = 0x01
     const I2C_ADD_Maqueen = 0x10
 
     function init() {
-    /* sence car type
-        p2      p15     carType
-        1       1       porocar
-        1       0       Tiny:bit
-        0       1       Maqueen
-        0       0       unknown
-    */
         if (initFlag == 0) {
             pins.setPull(DigitalPin.P2, PinPullMode.PullUp)
             pins.setPull(DigitalPin.P15, PinPullMode.PullUp)
@@ -159,79 +139,22 @@ namespace carcotrol {
             pins.i2cWriteBuffer(I2C_ADD_Maqueen, buf);
         } else if (cartype == carType.Porocar) {
             if (speedL >= 0) {
-                pins.analogWritePin(leftMotorPlus, speedL * 4);
-                pins.analogWritePin(leftMotorMinus, 0)
+                pins.digitalWritePin(DigitalPin.P12, 0)
+                pins.analogWritePin(AnalogPin.P8, speedL * 4);
             } else {
-                pins.analogWritePin(leftMotorMinus, (0 - speedL) * 4);
-                pins.analogWritePin(leftMotorPlus, 0)
+                pins.digitalWritePin(DigitalPin.P8, 0)
+                pins.analogWritePin(AnalogPin.P12, (0 - speedL) * 4);
             }
             if (speedR >= 0) {
-                pins.analogWritePin(rightMotorPlus, speedR * 4);
-                pins.analogWritePin(rightMotorMinus, 0)
+                pins.digitalWritePin(DigitalPin.P16, 0)
+                pins.analogWritePin(AnalogPin.P14, speedR * 4);
             } else {
-                pins.analogWritePin(rightMotorMinus, (0 - speedR) * 4);
-                pins.analogWritePin(rightMotorPlus, 0)
+                pins.digitalWritePin(DigitalPin.P14, 0)
+                pins.analogWritePin(AnalogPin.P16, (0 - speedR) * 4);
             }
         }
     }
 
-    /**
-     * assign pin no for neoPixel
-     * @param Neo   neoPixel
-     */
-    //% blockId="setNeoPinNo" block="setNeoPinNo| Neo %neo"
-    //% advanced=true
-    export function setNeoPinNo(Neo:DigitalPin){
-        neoPin = Neo;
-    }
-    /**
-     * assign pin no for line senser
-     * @param left   left line senser
-     * @param right  right line senser
-     */
-    //% blockId="setLineSenserPinNo" block="setLineSenserPinNo| Left %left| right %right"
-    //% advanced=true
-    export function setLineSenserPinNo(left:AnalogPin,right:AnalogPin){
-        lineLeft = left;
-        lineRight = right;
-    }
-    /**
-     * set threshold for line senser
-     * @param left   left line senser
-     * @param right  right line senser
-     */
-    //% blockId="setLineSenserThreshold" block="setLineSenserThreshold| Left %left| right %right"
-    //% advanced=true
-    export function setLineSenserThreshold(left:number,right:number){
-        thresholdLeft = left;
-        thresholdRight = right;
-    }
-    /**
-     * assign pin no for motor
-     * @param leftPlus   left motor plus
-     * @param leftMinus  left motor minus
-     * @param rightPlus  right motor plus
-     * @param rightMinus right motor minus
-     */
-    //% blockId="setMotorPinNo" block="setMotorPinNo| leftPlus %leftPlus| leftMinus %leftMinus| rightPlus %rightPLus| rightMinus %rightMinus"
-    //% advanced=true
-    export function setMotorPinNo(leftPlus:AnalogPin,leftMinus:AnalogPin,rightPlus:AnalogPin,rightMinus:AnalogPin){
-        leftMotorPlus = leftPlus;
-        leftMotorMinus = leftMinus;
-        rightMotorPlus = rightPlus;
-        rightMotorMinus = rightMinus;
-    }
-    /**
-     * assign pin no for distance senser
-     * @param trigger   trigger pin
-     * @param echo      echo pin
-     */
-    //% blockId="setDistancePinNo" block="setDistancePinNo| trigger %trigger| echo %echo"
-    //% advanced=true
-    export function setDistancePinNo(trigger:DigitalPin,echo:DigitalPin){
-        distanceTrigger = trigger;
-        distanceEcho = echo;
-    }
     /**
      * Run a car at a specified speed.
      * @param speedL Left Moter Power in -255 to 255. eg:50
@@ -282,7 +205,35 @@ namespace carcotrol {
     /**
      * Sense a line color.
      */
-    //% blockId="get_line_color" block="lineColor|direct %direct"
+    //% blockId="get_line_color" block="lineColor|direct %direct|color %color"
+    export function getLineColor(direct: Position,color:lineColor): boolean {
+        if (cartype == carType.Unknown) init();
+
+        if (cartype == carType.Maqueen) {
+            if (direct == Position.Left) {
+                return pins.digitalReadPin(DigitalPin.P13) == color;
+            } else if (direct == Position.Right) {
+                return pins.digitalReadPin(DigitalPin.P14) == color;
+            }
+        } else if (cartype == carType.Tinybit) {
+            if (direct == Position.Left)
+                return pins.digitalReadPin(DigitalPin.P13) != color;
+            else if (direct == Position.Right)
+                return pins.digitalReadPin(DigitalPin.P14) != color;
+        } else if (cartype == carType.Porocar) {
+            if (direct == Position.Left)
+                return (pins.analogReadPin(AnalogPin.P1) < 800 ? 1:0) == color;
+            else if (direct == Position.Right)
+                return (pins.analogReadPin(AnalogPin.P2) < 800 ? 1:0) == color;
+        }
+        return false;
+    }
+
+
+    /**
+     * Sense a line color for number
+     */
+    //% blockId="get_line_color_N" block="lineColorN|direct %direct"
     export function getLineColorN(direct: Position): number {
         if (cartype == carType.Unknown) init();
 
@@ -299,33 +250,11 @@ namespace carcotrol {
                 return 1 - pins.digitalReadPin(DigitalPin.P14);
         } else if (cartype == carType.Porocar) {
             if (direct == Position.Left)
-                return pins.analogReadPin(lineLeft);
+                return (pins.analogReadPin(AnalogPin.P1) < 800 ? 1:0);
             else if (direct == Position.Right)
-                return pins.analogReadPin(lineRight);
+                return (pins.analogReadPin(AnalogPin.P2) < 800 ? 1:0);
         }
         return -1;
-    }
-
-
-    /**
-     * Sense a line color for number
-     */
-    //% blockId="get_line_color" block="lineColor|direct %direct|color %color"
-    export function getLineColor(direct: Position,color:lineColor): boolean {
-
-        let Color=getLineColorN(direct);
-
-        if (cartype == carType.Maqueen) {
-            return Color == color;
-        } else if (cartype == carType.Tinybit){
-            return Color == color;
-        } else {
-            if (direct == Position.Left){
-                return Color < thresholdLeft;
-            }else{
-                return Color < thresholdRight;
-            }
-        }
     }
     /**
      * Get Voice Level.
@@ -358,9 +287,9 @@ namespace carcotrol {
         } else if (cartype == carType.Tinybit) {
             pinT = DigitalPin.P16
             pinR = DigitalPin.P15
-        } else {
-            pinT = distanceTrigger
-            pinR = distanceEcho
+        } else if (cartype == carType.Porocar) {
+            pinT = DigitalPin.P1
+            pinR = DigitalPin.P2
         }
         pins.setPull(pinT, PinPullMode.PullNone);
         pins.digitalWritePin(pinT, 0);
@@ -470,7 +399,7 @@ namespace carcotrol {
         if (cartype == carType.Unknown) return;
         if (cartype == carType.Tinybit) Pin = DigitalPin.P12;
         if (cartype == carType.Maqueen) Pin = DigitalPin.P15;
-        if (cartype == carType.Porocar) Pin = neoPin;
+        if (cartype == carType.Porocar) Pin = DigitalPin.P0;
 
         sendBuffer(buf, Pin);
     }
