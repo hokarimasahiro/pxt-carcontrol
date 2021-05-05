@@ -75,10 +75,20 @@ namespace carcotrol {
         if (initFlag == 0) {
             pins.setPull(DigitalPin.P2, PinPullMode.PullUp)
             pins.setPull(DigitalPin.P15, PinPullMode.PullUp)
-            if (pins.digitalReadPin(DigitalPin.P2) == 1 && pins.digitalReadPin(DigitalPin.P15) == 1) cartype = carType.Porocar;
-            else if (pins.digitalReadPin(DigitalPin.P2) == 1) cartype = carType.Tinybit;
-            else if (pins.digitalReadPin(DigitalPin.P15) == 1) cartype = carType.Maqueen;
-            else cartype = carType.Unknown
+            if (pins.digitalReadPin(DigitalPin.P2) == 1 && pins.digitalReadPin(DigitalPin.P15) == 1) {
+                cartype = carType.Porocar;
+                pins.setPull(DigitalPin.P1, PinPullMode.PullNone)
+                pins.setPull(DigitalPin.P2, PinPullMode.PullNone)
+            }
+            else if (pins.digitalReadPin(DigitalPin.P2) == 1){
+                cartype = carType.Tinybit;
+            }
+            else if (pins.digitalReadPin(DigitalPin.P15) == 1){
+                cartype = carType.Maqueen;
+            }
+            else{
+                cartype = carType.Unknown
+            } 
             pins.setPull(DigitalPin.P15, PinPullMode.PullNone)
             pins.setPull(DigitalPin.P2, PinPullMode.PullNone)
             initFlag = 1;
