@@ -202,7 +202,6 @@ namespace carcotrol {
         if (cartype == carType.Unknown) init();
         return cartype
     }
-
     /**
      * car type.
      */
@@ -211,35 +210,6 @@ namespace carcotrol {
     export function car(car_type: carType): number {
         return car_type;
     }
-
-    /**
-     * Sense a line color.
-     */
-    //% blockId="get_line_color" block="lineColor|direct %direct|color %color"
-    export function getLineColor(direct: Position,color:lineColor): boolean {
-        if (cartype == carType.Unknown) init();
-
-        if (cartype == carType.Maqueen) {
-            if (direct == Position.Left) {
-                return pins.digitalReadPin(DigitalPin.P13) == color;
-            } else if (direct == Position.Right) {
-                return pins.digitalReadPin(DigitalPin.P14) == color;
-            }
-        } else if (cartype == carType.Tinybit) {
-            if (direct == Position.Left)
-                return pins.digitalReadPin(DigitalPin.P13) != color;
-            else if (direct == Position.Right)
-                return pins.digitalReadPin(DigitalPin.P14) != color;
-        } else if (cartype == carType.Porocar) {
-            if (direct == Position.Left)
-                return (pins.analogReadPin(AnalogPin.P1) < 800 ? 1:0) == color;
-            else if (direct == Position.Right)
-                return (pins.analogReadPin(AnalogPin.P2) < 800 ? 1:0) == color;
-        }
-        return false;
-    }
-
-
     /**
      * Sense a line color for number
      */
@@ -260,12 +230,20 @@ namespace carcotrol {
                 return 1 - pins.digitalReadPin(DigitalPin.P14);
         } else if (cartype == carType.Porocar) {
             if (direct == Position.Left)
-                return (pins.analogReadPin(AnalogPin.P1) < 800 ? 1:0);
+                return (pins.analogReadPin(AnalogPin.P1) < 500 ? 1:0);
             else if (direct == Position.Right)
-                return (pins.analogReadPin(AnalogPin.P2) < 800 ? 1:0);
+                return (pins.analogReadPin(AnalogPin.P2) < 500 ? 1:0);
         }
         return -1;
     }
+    /**
+     * Sense a line color.
+     */
+    //% blockId="get_line_color" block="lineColor|direct %direct|color %color"
+    export function getLineColor(direct: Position,color:lineColor): boolean {
+        return getLineColorN(direct) == color;
+    }
+
     /**
      * Get Voice Level.
      */
