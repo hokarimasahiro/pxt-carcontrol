@@ -7,7 +7,7 @@ enum carType {
     Tinybit = 1,
     //% block=Maqueen
     Maqueen = 2,
-    //% block=switch education
+    //% block=switchEducation
     switchE = 3,
     //% block=Porocar
     Porocar = 4,
