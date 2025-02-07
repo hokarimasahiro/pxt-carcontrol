@@ -7,6 +7,8 @@ enum carType {
     Tinybit = 1,
     //% block=Maqueen
     Maqueen = 2,
+    //% block=switch education
+    switchE = 3,
     //% block=Porocar
     Porocar = 4,
     //% block=unknown
@@ -149,17 +151,32 @@ namespace carcotrol {
             pins.i2cWriteBuffer(I2C_ADD_Maqueen, buf);
         } else if (cartype == carType.Porocar) {
             if (speedL >= 0) {
-                pins.digitalWritePin(DigitalPin.P12, 0)
-                pins.analogWritePin(AnalogPin.P8, speedL * 4);
+                pins.digitalWritePin(DigitalPin.P14, 0)
+                pins.analogWritePin(AnalogPin.P13, speedL * 4);
             } else {
-                pins.digitalWritePin(DigitalPin.P8, 0)
-                pins.analogWritePin(AnalogPin.P12, (0 - speedL) * 4);
+                pins.digitalWritePin(DigitalPin.P13, 0)
+                pins.analogWritePin(AnalogPin.P14, (0 - speedL) * 4);
             }
             if (speedR >= 0) {
                 pins.digitalWritePin(DigitalPin.P16, 0)
-                pins.analogWritePin(AnalogPin.P14, speedR * 4);
+                pins.analogWritePin(AnalogPin.P15, speedR * 4);
             } else {
+                pins.digitalWritePin(DigitalPin.P15, 0)
+                pins.analogWritePin(AnalogPin.P16, (0 - speedR) * 4);
+            }
+        } else if (cartype == carType.switchE) {
+            if (speedL >= 0) {
                 pins.digitalWritePin(DigitalPin.P14, 0)
+                pins.analogWritePin(AnalogPin.P13, speedL * 4);
+            } else {
+                pins.digitalWritePin(DigitalPin.P13, 0)
+                pins.analogWritePin(AnalogPin.P14, (0 - speedL) * 4);
+            }
+            if (speedR >= 0) {
+                pins.digitalWritePin(DigitalPin.P16, 0)
+                pins.analogWritePin(AnalogPin.P15, speedR * 4);
+            } else {
+                pins.digitalWritePin(DigitalPin.P15, 0)
                 pins.analogWritePin(AnalogPin.P16, (0 - speedR) * 4);
             }
         }
@@ -233,6 +250,11 @@ namespace carcotrol {
                 return (pins.analogReadPin(AnalogPin.P1) < 500 ? 1:0);
             else if (direct == Position.Right)
                 return (pins.analogReadPin(AnalogPin.P2) < 500 ? 1:0);
+        } else if (cartype == carType.switchE) {
+            if (direct == Position.Left)
+                return (pins.analogReadPin(AnalogPin.P0) < 500 ? 1 : 0);
+            else if (direct == Position.Right)
+                return (pins.analogReadPin(AnalogPin.P1) < 500 ? 1 : 0);
         }
         return -1;
     }
@@ -264,6 +286,7 @@ namespace carcotrol {
     export function getDistance(): number {
         if (cartype == carType.Unknown) init();
         if (cartype == carType.Unknown) return -1;
+        if (cartype == carType.switchE) return -1;
 
         const usParCm = 43 //58    // 1000000[uS] / (340[m/S](sped of sound) * 100(cm)) * 2(round trip)
         let pinT: number
@@ -384,10 +407,10 @@ namespace carcotrol {
     export function show() {
         let Pin: DigitalPin
 
-        if (cartype == carType.Unknown) return;
-        if (cartype == carType.Tinybit) Pin = DigitalPin.P12;
-        if (cartype == carType.Maqueen) Pin = DigitalPin.P15;
-        if (cartype == carType.Porocar) Pin = DigitalPin.P0;
+        if (cartype == carType.Tinybit) Pin = DigitalPin.P12
+        else if (cartype == carType.Maqueen) Pin = DigitalPin.P15
+        else if (cartype == carType.Porocar) Pin = DigitalPin.P0
+        else return;
 
         sendBuffer(buf, Pin);
     }
