@@ -166,18 +166,18 @@ namespace carcotrol {
             }
         } else if (cartype == carType.switchE) {
             if (speedL >= 0) {
-                pins.digitalWritePin(DigitalPin.P14, 0)
-                pins.analogWritePin(AnalogPin.P13, speedL * 4);
+                pins.digitalWritePin(DigitalPin.P15, 0)
+                pins.analogWritePin(AnalogPin.P16, speedL * 4);
             } else {
-                pins.digitalWritePin(DigitalPin.P13, 0)
+                pins.digitalWritePin(DigitalPin.P15, 1)
                 pins.analogWritePin(AnalogPin.P14, (0 - speedL) * 4);
             }
             if (speedR >= 0) {
-                pins.digitalWritePin(DigitalPin.P16, 0)
-                pins.analogWritePin(AnalogPin.P15, speedR * 4);
+                pins.digitalWritePin(DigitalPin.P13, 0)
+                pins.analogWritePin(AnalogPin.P14, speedR * 4);
             } else {
-                pins.digitalWritePin(DigitalPin.P15, 0)
-                pins.analogWritePin(AnalogPin.P16, (0 - speedR) * 4);
+                pins.digitalWritePin(DigitalPin.P13, 1)
+                pins.analogWritePin(AnalogPin.P14, (0 - speedR) * 4);
             }
         }
     }
@@ -299,8 +299,8 @@ namespace carcotrol {
             pinT = DigitalPin.P16
             pinR = DigitalPin.P15
         } else if (cartype == carType.Porocar) {
-            pinT = DigitalPin.P2
-            pinR = DigitalPin.P1
+            pinT = DigitalPin.P12
+            pinR = DigitalPin.P8
         }
         pins.setPull(pinT, PinPullMode.PullNone);
         pins.digitalWritePin(pinT, 0);
