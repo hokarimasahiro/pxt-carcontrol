@@ -11,6 +11,8 @@ enum carType {
     switchE = 3,
     //% block=Porocar
     Porocar = 4,
+    //% block=PorocarO
+    PorocarO = 5,
     //% block=unknown
     Unknown = 0
 }
@@ -179,6 +181,21 @@ namespace carcotrol {
                 pins.digitalWritePin(DigitalPin.P13, 1)
                 pins.analogWritePin(AnalogPin.P14, (0 - speedR) * 4);
             }
+        } else if (cartype == carType.PorocarO) {
+            if (speedL >= 0) {
+                pins.digitalWritePin(DigitalPin.P13, 0)
+                pins.analogWritePin(AnalogPin.P14, speedL * 4);
+            } else {
+                pins.digitalWritePin(DigitalPin.P14, 0)
+                pins.analogWritePin(AnalogPin.P13, (0 - speedL) * 4);
+            }
+            if (speedR >= 0) {
+                pins.digitalWritePin(DigitalPin.P15, 0)
+                pins.analogWritePin(AnalogPin.P16, speedR * 4);
+            } else {
+                pins.digitalWritePin(DigitalPin.P16, 0)
+                pins.analogWritePin(AnalogPin.P15, (0 - speedR) * 4);
+            }
         }
     }
 
@@ -245,7 +262,7 @@ namespace carcotrol {
                 return 1 - pins.digitalReadPin(DigitalPin.P13);
             else if (direct == Position.Right)
                 return 1 - pins.digitalReadPin(DigitalPin.P14);
-        } else if (cartype == carType.Porocar) {
+        } else if (cartype == carType.Porocar || cartype == carType.PorocarO) {
             if (direct == Position.Left)
                 return (pins.analogReadPin(AnalogPin.P1) < 500 ? 1:0);
             else if (direct == Position.Right)
@@ -298,7 +315,7 @@ namespace carcotrol {
         } else if (cartype == carType.Tinybit) {
             pinT = DigitalPin.P16
             pinR = DigitalPin.P15
-        } else if (cartype == carType.Porocar) {
+        } else if (cartype == carType.Porocar || cartype == carType.PorocarO) {
             pinT = DigitalPin.P12
             pinR = DigitalPin.P8
         }
@@ -409,7 +426,7 @@ namespace carcotrol {
 
         if (cartype == carType.Tinybit) Pin = DigitalPin.P12
         else if (cartype == carType.Maqueen) Pin = DigitalPin.P15
-        else if (cartype == carType.Porocar) Pin = DigitalPin.P0
+        else if (cartype == carType.Porocar || cartype == carType.PorocarO) Pin = DigitalPin.P0
         else return;
 
         sendBuffer(buf, Pin);
