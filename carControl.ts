@@ -21,6 +21,8 @@ enum Position {
     Left = 1,
     //% block=Right
     Right = 2,
+    //% block=Center
+    Center = 3,
     //% block=Both
     Both = 0
 }
@@ -267,6 +269,8 @@ namespace carcotrol {
                 return (pins.analogReadPin(AnalogPin.P1) < 500 ? 1:0);
             else if (direct == Position.Right)
                 return (pins.analogReadPin(AnalogPin.P2) < 500 ? 1:0);
+            else if (direct == Position.Center)
+                return (pins.analogReadPin(AnalogPin.P0) < 500 ? 1 : 0);
         } else if (cartype == carType.switchE) {
             if (direct == Position.Left)
                 return (pins.analogReadPin(AnalogPin.P0) < 500 ? 1 : 0);
